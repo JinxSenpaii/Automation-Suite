@@ -1,0 +1,702 @@
+{
+  "name": "Fenjan 2 · Kitchen, Daily Special & Errors",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "fenjan-kitchen",
+        "formTitle": "Fenjan kitchen — update an order",
+        "formDescription": "The customer gets a Messenger/Instagram message as soon as you submit.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Order ID",
+              "fieldName": "order_id",
+              "fieldType": "text",
+              "placeholder": "F-261119-AB12",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Status",
+              "fieldName": "status",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "preparing"
+                  },
+                  {
+                    "option": "ready"
+                  },
+                  {
+                    "option": "out_for_delivery"
+                  },
+                  {
+                    "option": "cancelled"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Note for the customer (optional)",
+              "fieldName": "note",
+              "fieldType": "text",
+              "requiredField": false
+            }
+          ]
+        },
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "dba14e76-3dd7-4309-865e-a8c8c41e0ec4",
+      "name": "Kitchen Update",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "a231395f-d928-4465-bcd2-fa74f8099105"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Orders",
+          "mode": "name"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "order_id",
+              "lookupValue": "={{ String($json.order_id ?? $json['Order ID'] ?? '').trim().toUpperCase() }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1b697117-619c-49ba-be63-3579c5017e2b",
+      "name": "Find Order",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        240,
+        0
+      ],
+      "alwaysOutputData": true,
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const f = $('Kitchen Update').first().json;\nconst id = String(f.order_id ?? f['Order ID'] ?? '').trim().toUpperCase();\nconst status = String(f.status ?? f['Status'] ?? '').trim();\nconst note = String(f.note ?? f['Note for the customer (optional)'] ?? '').trim().slice(0, 300);\n\nconst o = $input.all().map(i => i.json).find(\n  r => String(r.order_id || '').trim().toUpperCase() === id\n);\n\nconst problems = [];\nif (!/^F-\\d{6}-[A-Z0-9]{4}$/.test(id)) {\n  problems.push('Order ID should look like F-261119-AB12');\n} else if (!o) {\n  problems.push(`Order ${id} was not found in the Orders sheet`);\n} else if (['cancelled'].includes(String(o.status || '').toLowerCase()) && status !== 'cancelled') {\n  problems.push(`Order ${id} is already cancelled`);\n}\nif (o && status === 'out_for_delivery' && o.fulfilment !== 'delivery') {\n  problems.push(`Order ${id} is a pickup order`);\n}\n\nconst ar = o?.language === 'ar';\nconst t = (en, a) => ar ? a : en;\n\nconst msgs = {\n  preparing: t(\n    `☕ We are preparing your order ${id} now.`,\n    `☕ بنحضر طلبك ${id} دلوقتي.`\n  ),\n  ready: t(\n    `✅ Your order ${id} is ready for pickup! See you at Fenjan.`,\n    `✅ طلبك ${id} جاهز للاستلام! مستنيينك في فنجان.`\n  ),\n  out_for_delivery: t(\n    `🛵 Your order ${id} is on the way to ${o?.address || 'you'}.`,\n    `🛵 طلبك ${id} في الطريق ليك على ${o?.address || 'عنوانك'}.`\n  ),\n  cancelled: t(\n    `Sorry, we had to cancel order ${id}. Reply here and we will sort it out.`,\n    `للأسف اضطرينا نلغي الطلب ${id}. رد علينا هنا وهنحلها.`\n  )\n};\n\nreturn [{\n  json: {\n    ok: problems.length === 0,\n    problems,\n    order_id: id,\n    status,\n    customer_id: o?.customer_id || '',\n    platform: o?.platform || '',\n    message: (msgs[status] || '') + (note ? '\\n' + note : ''),\n    now: $now.setZone('Africa/Cairo').toFormat('yyyy-MM-dd HH:mm')\n  }\n}];"
+      },
+      "id": "73c6e3a5-f160-48f9-95e9-fb08841c81e9",
+      "name": "Check Order",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "3d9c3c33-af31-4205-bc63-bbd62566dd05",
+              "leftValue": "={{ $json.ok }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "7b121511-78c2-4713-9042-b9273e249bf3",
+      "name": "Order OK?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        720,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const c = $('Check Order').first().json;\nreturn [{\n  json: {\n    order_id: c.order_id,\n    status: c.status,\n    updated_at: c.now\n  }\n}];"
+      },
+      "id": "f58a47ec-37ee-41cc-b9c5-e344e62cb418",
+      "name": "Status Row",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        980,
+        -100
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Orders",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "order_id"
+          ],
+          "schema": []
+        },
+        "options": {
+          "cellFormat": "RAW"
+        }
+      },
+      "id": "81ce40de-2499-4d75-affb-b2de54d62b36",
+      "name": "Update Order",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1220,
+        -100
+      ],
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v21.0",
+        "node": "YOUR_PAGE_ID",
+        "edge": "messages",
+        "options": {
+          "queryParametersJson": "={{ JSON.stringify({ messaging_type: 'RESPONSE', recipient: JSON.stringify({ id: $('Check Order').first().json.customer_id }), message: JSON.stringify({ text: $('Check Order').first().json.message }) }) }}"
+        }
+      },
+      "id": "70eac17d-e47d-4778-a8e8-04b726b9ed3d",
+      "name": "Message Customer",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        1460,
+        -100
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "41295592-df62-4326-938b-04c9ec59531a",
+              "leftValue": "={{ Number($json.statusCode || 0) < 400 && !$json.error }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "04ca8948-2e3e-4376-a3da-2b794b606e1a",
+      "name": "Delivered?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1720,
+        -160
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "completion",
+        "completionTitle": "Customer notified",
+        "completionMessage": "={{ 'Order ' + $('Check Order').first().json.order_id + ' is now ' + $('Check Order').first().json.status + ' and the customer got a ' + $('Check Order').first().json.platform + ' message.' }}",
+        "options": {}
+      },
+      "id": "5f9acaa2-6f08-4ec9-8e54-e3e2578b2f6d",
+      "name": "Done Page",
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 1,
+      "position": [
+        2000,
+        -240
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "completion",
+        "completionTitle": "Status saved, message not sent",
+        "completionMessage": "={{ 'Order ' + $('Check Order').first().json.order_id + ' was updated, but Meta refused the message (usually the customer has not written in the last 24 hours). Please reply from the page inbox.' }}",
+        "options": {}
+      },
+      "id": "60f885ef-1950-4ccd-904d-fd263b72b479",
+      "name": "Message Failed Page",
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 1,
+      "position": [
+        2000,
+        -40
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "completion",
+        "completionTitle": "Nothing was changed",
+        "completionMessage": "={{ 'Please fix: ' + $json.problems.join('; ') }}",
+        "options": {}
+      },
+      "id": "8543d9d6-e362-4251-b7e0-e006ca799c74",
+      "name": "Rejected Page",
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 1,
+      "position": [
+        980,
+        140
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "days",
+              "daysInterval": 1,
+              "triggerAtHour": 9,
+              "triggerAtMinute": 0
+            }
+          ]
+        }
+      },
+      "id": "749c2477-ff0c-44f7-a8c8-ddf28114ebf6",
+      "name": "Every Morning 9:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Specials",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "c8d6b912-51cb-4045-930a-2590013432de",
+      "name": "Read Specials",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        240,
+        420
+      ],
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const today = $now.setZone('Africa/Cairo').toFormat('yyyy-MM-dd');\nconst row = $input.all().map(i => i.json).find(\n  r => String(r.date || '').trim() === today\n    && String(r.posted || '').trim().toLowerCase() !== 'yes'\n    && String(r.text || '').trim()\n);\nreturn row ? [{ json: { date: today, text: String(row.text).slice(0, 2000) } }] : [];"
+      },
+      "id": "804b324c-e04f-475c-849a-85e865c951d8",
+      "name": "Pick Today's Special",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v21.0",
+        "node": "YOUR_PAGE_ID",
+        "edge": "feed",
+        "options": {
+          "queryParametersJson": "={{ JSON.stringify({ message: $json.text }) }}"
+        }
+      },
+      "id": "13eb3f94-6466-4c92-91fa-ef333cc08606",
+      "name": "Post to Facebook Page",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        720,
+        420
+      ],
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "if (Number($json.statusCode || 0) >= 400 || $json.error) {\n  throw new Error('Facebook refused the daily post: ' + String($json.error?.message || $json.headers?.['www-authenticate'] || 'unknown reason').slice(0, 300));\n}\nreturn [{\n  json: {\n    date: $(\"Pick Today's Special\").first().json.date,\n    posted: 'yes',\n    post_id: $json.id || ''\n  }\n}];"
+      },
+      "id": "ca30ef85-f487-4436-958d-ad861d5899b2",
+      "name": "Posted Row",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        960,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Specials",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "date"
+          ],
+          "schema": []
+        },
+        "options": {
+          "cellFormat": "RAW"
+        }
+      },
+      "id": "d1c2739c-fe00-4b35-a01f-f3a9eb4058cf",
+      "name": "Mark Posted",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1200,
+        420
+      ],
+      "retryOnFail": true
+    },
+    {
+      "parameters": {},
+      "id": "5b6b6610-4c58-4246-b56d-d5b664f10dea",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        720
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const e = $json.execution || {}, wf = $json.workflow || {};\nreturn [{\n  json: {\n    time: $now.setZone('Africa/Cairo').toFormat('yyyy-MM-dd HH:mm'),\n    workflow: wf.name || '',\n    node: e.lastNodeExecuted || $json.trigger?.node?.name || '',\n    message: String(e.error?.message || $json.trigger?.error?.message || 'Unknown error').slice(0, 400),\n    execution_url: e.url || ''\n  }\n}];"
+      },
+      "id": "2a10795a-1c73-48d4-8804-dd50e654c023",
+      "name": "Error Row",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        720
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Errors",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {
+          "cellFormat": "RAW",
+          "useAppend": true
+        }
+      },
+      "id": "e9f7bda8-7a6e-453c-beef-e45be744ac4d",
+      "name": "Log Error",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        480,
+        720
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "={{ '🚨 Fenjan error in ' + $('Error Row').first().json.workflow + ' → ' + $('Error Row').first().json.node + '\\n' + $('Error Row').first().json.message + '\\n' + $('Error Row').first().json.execution_url }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "f716d33b-806c-4ebd-a7ae-b0fec0e09790",
+      "name": "Alert Team",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        720,
+        720
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Kitchen Update": {
+      "main": [
+        [
+          {
+            "node": "Find Order",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Order": {
+      "main": [
+        [
+          {
+            "node": "Check Order",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Order": {
+      "main": [
+        [
+          {
+            "node": "Order OK?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Order OK?": {
+      "main": [
+        [
+          {
+            "node": "Status Row",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Rejected Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Status Row": {
+      "main": [
+        [
+          {
+            "node": "Update Order",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Order": {
+      "main": [
+        [
+          {
+            "node": "Message Customer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message Customer": {
+      "main": [
+        [
+          {
+            "node": "Delivered?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Message Failed Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delivered?": {
+      "main": [
+        [
+          {
+            "node": "Done Page",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Message Failed Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Every Morning 9:00": {
+      "main": [
+        [
+          {
+            "node": "Read Specials",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Specials": {
+      "main": [
+        [
+          {
+            "node": "Pick Today's Special",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pick Today's Special": {
+      "main": [
+        [
+          {
+            "node": "Post to Facebook Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post to Facebook Page": {
+      "main": [
+        [
+          {
+            "node": "Posted Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Posted Row": {
+      "main": [
+        [
+          {
+            "node": "Mark Posted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Error Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Row": {
+      "main": [
+        [
+          {
+            "node": "Log Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Error": {
+      "main": [
+        [
+          {
+            "node": "Alert Team",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Africa/Cairo"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  }
+}

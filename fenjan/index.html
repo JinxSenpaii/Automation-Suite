@@ -1,0 +1,2545 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Fenjan Café — Order your coffee in a DM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&family=Fraunces:opsz,wght@9..144,700;9..144,800;9..144,900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #12100e;
+      --bg-2: #171411;
+      --card: #181512;
+      --card-2: #211c18;
+      --border: #2c2620;
+      --border-strong: #3d352c;
+      --text: #f3ede4;
+      --text-soft: #b8aea0;
+      --text-muted: #847a6e;
+      --teal: #3cc3b5;
+      --teal-dark: #0c2c28;
+      --teal-btn-text: #09201d;
+      --gold: #d9a536;
+      --gold-soft: rgba(217, 165, 54, 0.16);
+      --danger: #f87171;
+      --danger-soft: rgba(248, 113, 113, 0.14);
+      --ok: #3cc3b5;
+      --ok-soft: rgba(60, 195, 181, 0.15);
+      --msg-bg: #11100f;
+      --msg-in: #24201c;
+      --msg-out: #0084ff;
+      --tg-bg: #111e2b;
+      --tg-header: #1d86d8;
+      --tg-card: #18293a;
+      --grid-dot: rgba(184, 174, 160, 0.15);
+      --shadow: 0 18px 42px rgba(0, 0, 0, 0.42);
+    }
+
+    html[data-theme="light"] {
+      --bg: #faf6f0;
+      --bg-2: #f3ece2;
+      --card: #ffffff;
+      --card-2: #f6f0e7;
+      --border: #e4d9ca;
+      --border-strong: #cfc0ad;
+      --text: #1c1612;
+      --text-soft: #594e43;
+      --text-muted: #877a6c;
+      --teal: #1b9c8f;
+      --teal-dark: #d9f3ef;
+      --teal-btn-text: #ffffff;
+      --gold: #b8821d;
+      --gold-soft: rgba(184, 130, 29, 0.14);
+      --danger: #dc2626;
+      --danger-soft: rgba(220, 38, 38, 0.1);
+      --ok: #0d9488;
+      --ok-soft: rgba(13, 148, 136, 0.12);
+      --msg-bg: #f6f3ee;
+      --msg-in: #ebe5dc;
+      --msg-out: #0084ff;
+      --tg-bg: #eaf3fb;
+      --tg-header: #2589d8;
+      --tg-card: #ffffff;
+      --grid-dot: rgba(28, 22, 18, 0.14);
+      --shadow: 0 14px 30px rgba(28, 22, 18, 0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; max-width: 100%; overflow-x: clip; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      line-height: 1.55;
+      max-width: 100%;
+      overflow-x: clip;
+      transition: background 0.25s ease, color 0.25s ease;
+    }
+
+    .serif {
+      font-family: 'Fraunces', Georgia, serif;
+      letter-spacing: -0.025em;
+    }
+
+    .hero-grid > *,
+    .demo-top-grid > *,
+    .demo-bottom-grid > *,
+    .steps-grid > *,
+    .info-grid > * {
+      min-width: 0;
+    }
+
+    /* ---------- TOPBAR ---------- */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: color-mix(in srgb, var(--bg) 92%, transparent);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .topbar-inner {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 13px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      text-decoration: none;
+      color: var(--text);
+      flex-shrink: 0;
+    }
+
+    .brand-title {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .brand-by {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .nav a {
+      color: var(--text-soft);
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 500;
+      transition: color 0.16s ease;
+    }
+    .nav a:hover { color: var(--text); }
+
+    .theme-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1px solid var(--border-strong);
+      background: var(--card);
+      color: var(--text-soft);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      font-size: 14px;
+      transition: all 0.16s ease;
+    }
+    .theme-btn:hover { border-color: var(--teal); color: var(--text); }
+
+    /* ---------- SECTIONS ---------- */
+    .section {
+      width: 100%;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .wrap {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 58px 24px;
+    }
+
+    /* ---------- HERO ---------- */
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+      gap: 44px;
+      align-items: center;
+    }
+
+    .hero-title {
+      font-size: clamp(40px, 5.4vw, 68px);
+      font-weight: 900;
+      line-height: 0.98;
+      margin-bottom: 18px;
+    }
+
+    .hero-ar {
+      font-family: 'Cairo', sans-serif;
+      font-size: clamp(22px, 2.7vw, 31px);
+      font-weight: 800;
+      color: var(--teal);
+      margin-bottom: 18px;
+    }
+
+    .hero-desc {
+      font-size: 15.5px;
+      color: var(--text-soft);
+      max-width: 500px;
+      margin-bottom: 26px;
+      line-height: 1.65;
+    }
+
+    .hero-ctas {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+
+    .btn-teal {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 11px 22px;
+      border-radius: 999px;
+      border: 1px solid var(--teal);
+      background: var(--teal);
+      color: var(--teal-btn-text);
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+    .btn-teal:hover { filter: brightness(1.08); transform: translateY(-1px); }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 11px 22px;
+      border-radius: 999px;
+      border: 1px solid var(--teal);
+      background: transparent;
+      color: var(--teal);
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+    .btn-outline:hover { background: var(--ok-soft); }
+
+    .hero-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--text-soft);
+    }
+
+    .hero-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 18px;
+    }
+
+    .hero-meta strong { color: var(--text); font-weight: 700; }
+
+    /* Hero Illustration Stage */
+    .cup-stage {
+      position: relative;
+      display: grid;
+      place-items: center;
+      padding: 36px 12px;
+    }
+
+    .float-dm {
+      position: absolute;
+      top: 12px;
+      left: 6%;
+      background: var(--card-2);
+      border: 1px solid var(--border-strong);
+      color: var(--text);
+      font-family: 'Cairo', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 9px 16px;
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      direction: rtl;
+    }
+
+    .float-confirm {
+      position: absolute;
+      bottom: 24px;
+      right: 4%;
+      background: var(--teal);
+      color: var(--teal-btn-text);
+      font-size: 12.5px;
+      font-weight: 700;
+      padding: 10px 15px;
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .steam-line {
+      animation: steamRise 3.2s ease-in-out infinite;
+    }
+    .steam-line:nth-child(2) { animation-delay: 0.6s; }
+    .steam-line:nth-child(3) { animation-delay: 1.2s; }
+
+    @keyframes steamRise {
+      0%, 100% { opacity: 0.35; transform: translateY(0px); }
+      50% { opacity: 0.78; transform: translateY(-4px); }
+    }
+
+    /* ---------- DEMO SECTION ---------- */
+    .sec-title {
+      font-size: clamp(28px, 3.6vw, 40px);
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+
+    .sec-sub {
+      color: var(--text-soft);
+      font-size: 14.5px;
+      max-width: 680px;
+      margin-bottom: 24px;
+    }
+
+    .controls-bar {
+      display: flex;
+      align-items: center;
+      gap: 14px 20px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+      font-size: 13px;
+      color: var(--text-soft);
+    }
+
+    .control-select {
+      background: var(--card);
+      border: 1px solid var(--border-strong);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 13px;
+      padding: 7px 12px;
+      border-radius: 10px;
+      outline: none;
+    }
+    .control-select:focus { border-color: var(--teal); }
+
+    .check-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .check-label input { accent-color: var(--teal); width: 15px; height: 15px; }
+
+    .demo-top-grid {
+      display: grid;
+      grid-template-columns: minmax(290px, 1.05fr) minmax(0, 0.95fr) minmax(275px, 1fr);
+      gap: 16px;
+      margin-bottom: 18px;
+      align-items: stretch;
+    }
+
+    /* Messenger / Instagram Simulator */
+    .dm-phone {
+      background: var(--msg-bg);
+      border: 3px solid var(--text);
+      border-radius: 26px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 520px;
+      box-shadow: var(--shadow);
+    }
+
+    .dm-header {
+      background: #0084ff;
+      color: #ffffff;
+      padding: 13px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      transition: background 0.25s ease;
+    }
+
+    .dm-phone.ig .dm-header {
+      background: linear-gradient(135deg, #833ab4 0%, #dd2a7b 52%, #f58529 100%);
+    }
+
+    .dm-brand {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-width: 0;
+    }
+
+    .dm-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #ffffff;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .dm-name { font-size: 13.5px; font-weight: 700; line-height: 1.2; }
+    .dm-sub { font-size: 11px; opacity: 0.88; line-height: 1.2; }
+
+    .channel-switch {
+      display: inline-flex;
+      background: rgba(0, 0, 0, 0.22);
+      border-radius: 999px;
+      padding: 2px;
+      flex-shrink: 0;
+    }
+
+    .ch-btn {
+      border: none;
+      background: transparent;
+      color: rgba(255, 255, 255, 0.9);
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+    .ch-btn.active { background: #ffffff; color: #0b4db3; }
+    .dm-phone.ig .ch-btn.active { color: #b51f6e; }
+
+    .dm-meta-bar {
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      padding: 8px 10px 2px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .dm-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px 13px;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .dm-bubble {
+      max-width: 88%;
+      padding: 9px 12px;
+      border-radius: 15px;
+      font-size: 12.5px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .dm-bubble.ar { font-family: 'Cairo', 'Inter', sans-serif; direction: rtl; text-align: right; }
+
+    .dm-bubble.bot {
+      align-self: flex-start;
+      background: var(--msg-in);
+      color: var(--text);
+      border-bottom-left-radius: 4px;
+    }
+
+    .dm-bubble.user {
+      align-self: flex-end;
+      background: #0084ff;
+      color: #ffffff;
+      border-bottom-right-radius: 4px;
+    }
+
+    .dm-phone.ig .dm-bubble.user {
+      background: linear-gradient(135deg, #833ab4, #dd2a7b);
+    }
+
+    .dm-pills {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 8px 11px 6px;
+      border-top: 1px solid var(--border);
+    }
+
+    .dm-pill {
+      flex-shrink: 0;
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border-strong);
+      background: var(--card);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 11.5px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .dm-pill:hover { border-color: var(--teal); color: var(--teal); }
+
+    .dm-form {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 11px 11px;
+    }
+
+    .dm-input {
+      flex: 1;
+      min-width: 0;
+      background: var(--card);
+      border: 1px solid var(--border-strong);
+      border-radius: 999px;
+      padding: 9px 14px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 13px;
+      outline: none;
+    }
+    .dm-input:focus { border-color: var(--teal); }
+
+    .dm-send {
+      padding: 9px 16px;
+      border-radius: 999px;
+      border: none;
+      background: #0084ff;
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .dm-phone.ig .dm-send { background: linear-gradient(135deg, #833ab4, #dd2a7b); }
+
+    /* Execution Log */
+    .log-panel {
+      background: #0c0b0a;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 520px;
+    }
+
+    html[data-theme="light"] .log-panel { background: var(--card); }
+
+    .panel-head {
+      padding: 13px 15px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13.5px;
+      font-weight: 700;
+    }
+
+    .status-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      color: var(--text-soft);
+    }
+    .status-pill.running { color: var(--gold); border-color: var(--gold); background: var(--gold-soft); }
+    .status-pill.done { color: var(--teal); border-color: var(--teal); background: var(--ok-soft); }
+    .status-pill.error { color: var(--danger); border-color: var(--danger); background: var(--danger-soft); }
+
+    .log-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 13px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .log-empty { color: var(--text-muted); line-height: 1.5; }
+
+    .log-step {
+      display: flex;
+      gap: 9px;
+      align-items: flex-start;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: var(--card-2);
+      border: 1px solid var(--border);
+    }
+
+    .log-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-top: 4px;
+      flex-shrink: 0;
+      background: var(--teal);
+    }
+    .log-dot.warn { background: var(--gold); }
+    .log-dot.err { background: var(--danger); }
+    .log-dot.info { background: #38bdf8; }
+
+    .log-text { min-width: 0; flex: 1; }
+    .log-node { font-weight: 600; color: var(--text); word-break: break-word; }
+    .log-detail { color: var(--text-soft); font-size: 11px; margin-top: 2px; word-break: break-word; }
+    .log-ms { color: var(--text-muted); font-size: 10px; flex-shrink: 0; }
+
+    /* Kitchen Telegram Panel */
+    .tg-panel {
+      background: var(--tg-bg);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 18px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 520px;
+      box-shadow: var(--shadow);
+    }
+
+    .tg-header {
+      background: var(--tg-header);
+      color: #ffffff;
+      padding: 13px 15px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13.5px;
+      font-weight: 700;
+    }
+
+    .tg-role {
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      opacity: 0.9;
+    }
+
+    .tg-feed {
+      flex: 1;
+      overflow-y: auto;
+      padding: 13px;
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    .tg-empty {
+      color: #8aa5bd;
+      font-size: 12.5px;
+      text-align: center;
+      padding: 20px 10px;
+    }
+
+    .tg-card {
+      background: var(--tg-card);
+      border: 1px solid rgba(56, 189, 248, 0.22);
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 12.5px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .tg-card.err { border-color: rgba(248, 113, 113, 0.45); }
+    .tg-card.human { border-color: rgba(217, 165, 54, 0.45); }
+
+    .tg-sender {
+      font-size: 11px;
+      font-weight: 700;
+      color: #60b8f7;
+      margin-bottom: 4px;
+    }
+    .tg-card.err .tg-sender { color: var(--danger); }
+    .tg-card.human .tg-sender { color: var(--gold); }
+
+    .tg-status-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .tg-act-btn {
+      padding: 7px 8px;
+      border-radius: 8px;
+      border: 1px solid rgba(60, 195, 181, 0.4);
+      background: rgba(60, 195, 181, 0.12);
+      color: var(--teal);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .tg-act-btn:hover { background: var(--teal); color: var(--teal-btn-text); }
+    .tg-act-btn.cancel {
+      border-color: rgba(248, 113, 113, 0.45);
+      background: var(--danger-soft);
+      color: var(--danger);
+    }
+    .tg-act-btn.cancel:hover { background: var(--danger); color: #ffffff; }
+
+    .tg-feedback {
+      margin-top: 8px;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 6px 8px;
+      border-radius: 7px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-soft);
+    }
+    .tg-feedback.ok { background: var(--ok-soft); color: var(--teal); }
+    .tg-feedback.err { background: var(--danger-soft); color: var(--danger); }
+
+    /* Bottom Row: Google Sheet + Facebook Page */
+    .demo-bottom-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.55fr) minmax(270px, 0.95fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .sheet-card, .fb-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .sheet-head {
+      padding: 13px 15px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sheet-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .card-heading { font-size: 14px; font-weight: 700; }
+
+    .sheet-tabs {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .sheet-tab {
+      padding: 5px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-strong);
+      background: transparent;
+      color: var(--text-soft);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .sheet-tab.active {
+      background: var(--teal);
+      border-color: var(--teal);
+      color: var(--teal-btn-text);
+    }
+
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      max-height: 290px;
+      overflow-y: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    thead th {
+      position: sticky;
+      top: 0;
+      background: var(--bg-2);
+      color: var(--gold);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-align: left;
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    tbody td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-soft);
+      white-space: nowrap;
+    }
+    tbody td.strong { color: var(--text); font-weight: 600; }
+
+    .avail-toggle {
+      padding: 3px 9px;
+      border-radius: 999px;
+      border: 1px solid var(--teal);
+      background: var(--ok-soft);
+      color: var(--teal);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .avail-toggle.no {
+      border-color: var(--danger);
+      background: var(--danger-soft);
+      color: var(--danger);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      font-weight: 600;
+    }
+    .badge.new, .badge.open { background: var(--gold-soft); color: var(--gold); }
+    .badge.preparing, .badge.ready, .badge.out_for_delivery, .badge.yes { background: var(--ok-soft); color: var(--teal); }
+    .badge.cancelled, .badge.closed, .badge.no { background: var(--danger-soft); color: var(--danger); }
+
+    /* Facebook Page Card */
+    .fb-card { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+    .fb-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .fb-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    .fb-posts {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 54px;
+      font-size: 13px;
+      color: var(--text-soft);
+    }
+
+    .fb-post {
+      background: var(--card-2);
+      border: 1px solid var(--border-strong);
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 12.5px;
+      color: var(--text);
+      line-height: 1.55;
+      white-space: pre-wrap;
+    }
+
+    .fb-post-meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      color: var(--teal);
+      margin-bottom: 6px;
+    }
+
+    .fb-foot-note { font-size: 12px; color: var(--text-muted); }
+
+    /* ---------- HOW IT WORKS ---------- */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .step-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 16px;
+    }
+
+    .step-num {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--gold);
+      color: #1a1308;
+      display: grid;
+      place-items: center;
+      font-size: 12.5px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .step-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 7px; }
+    .step-card p { font-size: 13px; color: var(--text-soft); line-height: 1.55; }
+
+    /* ---------- WORKFLOW VIEWER ---------- */
+    .wf-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 22px;
+    }
+
+    .wf-bar {
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .wf-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+
+    .wf-tab {
+      padding: 6px 13px;
+      border-radius: 8px;
+      border: 1px solid var(--border-strong);
+      background: transparent;
+      color: var(--text-soft);
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .wf-tab.active {
+      background: var(--teal);
+      border-color: var(--teal);
+      color: var(--teal-btn-text);
+    }
+
+    .wf-stats {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .wf-canvas-shell {
+      position: relative;
+      height: 430px;
+      background-color: var(--bg);
+      background-image: radial-gradient(var(--grid-dot) 1.2px, transparent 1.2px);
+      background-size: 20px 20px;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+      cursor: grab;
+      touch-action: pan-x pan-y;
+    }
+    .wf-canvas-shell:active { cursor: grabbing; }
+
+    .wf-zoom-controls {
+      position: sticky;
+      top: 10px;
+      left: 10px;
+      z-index: 10;
+      display: inline-flex;
+      gap: 4px;
+      padding: 4px;
+      margin: 10px;
+      border-radius: 9px;
+      background: color-mix(in srgb, var(--card) 92%, transparent);
+      border: 1px solid var(--border-strong);
+    }
+
+    .zoom-btn {
+      padding: 4px 9px;
+      border: none;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .zoom-btn:hover { background: var(--card-2); }
+
+    .wf-stage { position: relative; transform-origin: 0 0; }
+    .wf-edges { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
+
+    .wf-node {
+      position: absolute;
+      width: 170px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: var(--card);
+      border: 1px solid var(--border-strong);
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      transition: border-color 0.15s ease;
+    }
+    .wf-node:hover, .wf-node.selected {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 2px var(--ok-soft);
+    }
+
+    .wf-node-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.25;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .wf-node-type {
+      font-size: 10.5px;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+      margin-top: 2px;
+    }
+
+    .wf-footer {
+      padding: 13px 16px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      font-size: 13px;
+      color: var(--text-soft);
+    }
+
+    /* Bottom 3 Info Cards */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .info-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 18px;
+    }
+
+    .info-card h3 {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 17px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .info-card ul {
+      padding-left: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--text-soft);
+    }
+
+    .info-card p {
+      font-size: 13px;
+      color: var(--text-soft);
+      line-height: 1.65;
+    }
+
+    .info-card strong { color: var(--text); }
+
+    /* Footer */
+    .site-footer {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 20px 24px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      font-size: 12.5px;
+      color: var(--text-muted);
+    }
+    .site-footer strong { color: var(--text); }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 1100px) {
+      .hero-grid { grid-template-columns: 1fr; gap: 28px; }
+      .demo-top-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .log-panel { grid-column: 1 / -1; order: 3; height: 300px; }
+      .demo-bottom-grid { grid-template-columns: 1fr; }
+      .steps-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .info-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 720px) {
+      .topbar-inner { padding: 11px 14px; flex-wrap: wrap; }
+      .nav { gap: 12px; }
+      .wrap { padding: 34px 14px; }
+      .demo-top-grid { grid-template-columns: 1fr; }
+      .dm-phone { height: 470px; }
+      .tg-panel { height: 390px; }
+      .log-panel { height: 280px; }
+      .steps-grid { grid-template-columns: 1fr; }
+      .float-dm { left: 2%; top: 4px; font-size: 12.5px; }
+      .float-confirm { right: 2%; bottom: 8px; font-size: 11.5px; }
+      .wf-canvas-shell { height: 340px; }
+      .site-footer { padding: 18px 14px 26px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- TOP NAVIGATION -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#hero">
+        <svg width="24" height="24" viewBox="0 0 36 36" fill="none" aria-hidden="true">
+          <ellipse cx="17" cy="29" rx="13" ry="3.2" fill="#d9a536"/>
+          <path d="M7 11h19v7.5c0 5.2-4.2 9.5-9.5 9.5S7 23.7 7 18.5V11z" fill="#3cc3b5"/>
+          <ellipse cx="16.5" cy="11" rx="9.5" ry="2.2" fill="#e6cfa8"/>
+          <path d="M26 13.5h2.2a3.5 3.5 0 0 1 0 7H25.5" stroke="#3cc3b5" stroke-width="2.6" stroke-linecap="round"/>
+        </svg>
+        <span class="brand-title">Fenjan</span>
+        <span class="brand-by">by Abdelrahman</span>
+      </a>
+      <nav class="nav" aria-label="Fenjan Sections">
+        <a href="#demo">Try it</a>
+        <a href="#how-it-works">How it works</a>
+        <a href="#workflows">Workflows</a>
+        <button class="theme-btn" id="themeToggle" title="Toggle light/dark mode">☾</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ==================== HERO ==================== -->
+  <section class="section" id="hero">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <h1 class="hero-title serif">Order your coffee<br>in a DM.</h1>
+          <div class="hero-ar">اطلب قهوتك من الرسايل</div>
+          <p class="hero-desc">
+            Fenjan Café answers Messenger and Instagram messages any time of day. Customers write in Arabic, English or Franco; AI reads the order, the menu sheet sets the prices, and the kitchen updates the customer from one form.
+          </p>
+          <div class="hero-ctas">
+            <a class="btn-teal" href="#demo">Try the demo</a>
+            <a class="btn-outline" href="#workflows">See the workflows</a>
+          </div>
+          <div class="hero-meta">
+            <div class="hero-meta-row">
+              <span><strong>2</strong> channels: Messenger, Instagram</span>
+              <span><strong>14</strong> menu items, Arabic + English</span>
+              <span><strong>2</strong> n8n workflows</span>
+            </div>
+            <div class="hero-meta-row">
+              <span>Delivery <strong>25 EGP</strong>, open <strong>8:00 to midnight</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="cup-stage">
+          <div class="float-dm">عايز ٢ سبانش لاتيه، توصيل</div>
+          <svg width="310" height="260" viewBox="0 0 320 260" fill="none" role="img" aria-label="Fenjan Café turquoise teacup illustration">
+            <!-- Steam -->
+            <path class="steam-line" d="M135 58 C129 44, 142 36, 136 20" stroke="#7d7266" stroke-width="3" stroke-linecap="round"/>
+            <path class="steam-line" d="M162 54 C156 40, 169 32, 163 14" stroke="#7d7266" stroke-width="3" stroke-linecap="round"/>
+            <path class="steam-line" d="M188 58 C182 44, 195 36, 189 20" stroke="#7d7266" stroke-width="3" stroke-linecap="round"/>
+            <!-- Saucer -->
+            <ellipse cx="160" cy="214" rx="110" ry="18" fill="#c99c3c"/>
+            <ellipse cx="160" cy="210" rx="90" ry="12" fill="#181512"/>
+            <!-- Cup handle -->
+            <path d="M235 110 H252 C272 110 278 158 250 158 H230" stroke="#3cc3b5" stroke-width="14" stroke-linecap="round"/>
+            <!-- Cup body -->
+            <path d="M84 94 H236 V142 C236 184 202 214 160 214 C118 214 84 184 84 142 V94 Z" fill="#32b5a8"/>
+            <!-- Coffee rim -->
+            <ellipse cx="160" cy="94" rx="76" ry="14" fill="#d9be94"/>
+            <ellipse cx="160" cy="95" rx="64" ry="8" fill="#704a2b" opacity="0.5"/>
+            <!-- Decorative gold wave & circles -->
+            <path d="M105 138 Q120 122 135 138 T165 138 T195 138 T215 134" stroke="#d9a536" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+            <circle cx="118" cy="160" r="4.5" stroke="#d9a536" stroke-width="3" fill="none"/>
+            <circle cx="146" cy="160" r="4.5" stroke="#d9a536" stroke-width="3" fill="none"/>
+            <circle cx="174" cy="160" r="4.5" stroke="#d9a536" stroke-width="3" fill="none"/>
+            <circle cx="202" cy="160" r="4.5" stroke="#d9a536" stroke-width="3" fill="none"/>
+          </svg>
+          <div class="float-confirm">✅ Order F-261126-K7Q2 confirmed</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== DEMO ==================== -->
+  <section class="section" id="demo">
+    <div class="wrap">
+      <h2 class="sec-title serif">Try it: order like a customer</h2>
+      <p class="sec-sub">
+        Message Fenjan below, then run the kitchen from Telegram. Everything here runs in your browser with the real menu, prices and rules from the workflows, and the log shows each n8n node as it runs. No message leaves this page.
+      </p>
+
+      <div class="controls-bar">
+        <label style="display:inline-flex; align-items:center; gap:8px;">
+          <span>Café clock</span>
+          <select class="control-select" id="clockSelect">
+            <option value="open">Now (open)</option>
+            <option value="closed">02:00 Cairo (closed)</option>
+          </select>
+        </label>
+        <label class="check-label">
+          <input type="checkbox" id="failMetaCheck" />
+          <span>Simulate Meta refusing a reply</span>
+        </label>
+        <button type="button" class="btn-outline" id="resetDemoBtn" style="padding:7px 15px; font-size:12.5px;">Reset demo</button>
+      </div>
+
+      <!-- 3-Column Interactive Row -->
+      <div class="demo-top-grid">
+        <!-- Left: Messenger / Instagram -->
+        <div class="dm-phone" id="dmPhone">
+          <div class="dm-header">
+            <div class="dm-brand">
+              <div class="dm-avatar">
+                <svg width="20" height="20" viewBox="0 0 36 36" fill="none">
+                  <ellipse cx="17" cy="29" rx="12" ry="3" fill="#d9a536"/>
+                  <path d="M7 11h19v7.5c0 5.2-4.2 9.5-9.5 9.5S7 23.7 7 18.5V11z" fill="#3cc3b5"/>
+                </svg>
+              </div>
+              <div>
+                <div class="dm-name">Fenjan Café</div>
+                <div class="dm-sub" id="dmChannelSub">Messenger · replies instantly</div>
+              </div>
+            </div>
+            <div class="channel-switch" id="channelSwitch">
+              <button type="button" class="ch-btn active" data-ch="Messenger">Messenger</button>
+              <button type="button" class="ch-btn" data-ch="Instagram">Instagram</button>
+            </div>
+          </div>
+
+          <div class="dm-meta-bar" id="dmMetaBar">Messenger chat · customer psid-7781</div>
+          <div class="dm-messages" id="dmMessages"></div>
+
+          <div class="dm-pills" id="dmPills">
+            <button type="button" class="dm-pill" data-msg="hi">hi</button>
+            <button type="button" class="dm-pill" data-msg="menu">menu</button>
+            <button type="button" class="dm-pill" data-msg="عايز ٢ سبانش لاتيه وكرواسون، توصيل">عايز ٢ سبانش لاتيه وكرواسون، توصيل</button>
+            <button type="button" class="dm-pill" data-msg="شارع 9 المعادي عمارة ١٢">شارع 9 المعادي عمارة ١٢</button>
+            <button type="button" class="dm-pill" data-msg="تأكيد">تأكيد</button>
+            <button type="button" class="dm-pill" data-msg="2 iced caramel latte and a zaatar manousheh, pickup">2 iced caramel latte + zaatar, pickup</button>
+            <button type="button" class="dm-pill" data-msg="remove the zaatar">remove the zaatar</button>
+            <button type="button" class="dm-pill" data-msg="do you have pizza?">do you have pizza?</button>
+            <button type="button" class="dm-pill" data-msg="I want 30 basbousa">I want 30 basbousa</button>
+            <button type="button" class="dm-pill" data-msg="cancel">cancel</button>
+            <button type="button" class="dm-pill" data-msg="my order came cold, I want to talk to someone">talk to a human</button>
+          </div>
+
+          <form class="dm-form" id="dmForm">
+            <input class="dm-input" id="dmInput" type="text" placeholder="Message Fenjan..." autocomplete="off" />
+            <button type="submit" class="dm-send">Send</button>
+          </form>
+        </div>
+
+        <!-- Middle: n8n Execution Log -->
+        <div class="log-panel">
+          <div class="panel-head">
+            <span>n8n execution log</span>
+            <span class="status-pill" id="execStatus">idle</span>
+          </div>
+          <div class="log-body" id="execLog">
+            <div class="log-empty">Send a message: each node of the workflow appears here as it runs.</div>
+          </div>
+        </div>
+
+        <!-- Right: Fenjan Kitchen Telegram -->
+        <div class="tg-panel">
+          <div class="tg-header">
+            <span>Fenjan Kitchen · Telegram</span>
+            <span class="tg-role">staff</span>
+          </div>
+          <div class="tg-feed" id="tgFeed">
+            <div class="tg-empty">New orders and "call a human" alerts arrive here. Status buttons stand in for the kitchen update form.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Row: Google Sheet + Facebook Page -->
+      <div class="demo-bottom-grid">
+        <div class="sheet-card">
+          <div class="sheet-head">
+            <div class="sheet-title-row">
+              <span class="card-heading">Google Sheet · Fenjan Café · Orders by DM</span>
+              <span style="font-size:11.5px; color:var(--text-muted);">Toggle Menu availability live</span>
+            </div>
+            <div class="sheet-tabs" id="sheetTabs">
+              <button type="button" class="sheet-tab" data-tab="menu">Menu</button>
+              <button type="button" class="sheet-tab" data-tab="carts">Carts</button>
+              <button type="button" class="sheet-tab active" data-tab="orders">Orders</button>
+              <button type="button" class="sheet-tab" data-tab="specials">Specials</button>
+              <button type="button" class="sheet-tab" data-tab="errors">Errors</button>
+            </div>
+          </div>
+          <div class="table-wrap" id="sheetTableWrap"></div>
+        </div>
+
+        <div class="fb-card">
+          <div class="fb-head">
+            <span class="card-heading">Fenjan Café · Facebook Page</span>
+            <span class="fb-tag">page posts</span>
+          </div>
+          <div class="fb-posts" id="fbPosts">
+            <div>No posts yet today. The daily special goes out at 9:00.</div>
+          </div>
+          <button type="button" class="btn-teal" id="runSpecialBtn" style="width:100%;">Run the 9:00 daily special</button>
+          <div class="fb-foot-note">Picks today's unposted text from the Specials tab and posts it to the page.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== HOW IT WORKS & WORKFLOWS ==================== -->
+  <section class="section" id="how-it-works">
+    <div class="wrap">
+      <h2 class="sec-title serif">How it works</h2>
+      <p class="sec-sub">
+        The AI only reads what the customer means. Items, prices, totals, opening hours and delivery fees always come from the sheet and fixed rules, so the bot can't invent a price.
+      </p>
+
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <h3>A DM arrives</h3>
+          <p>Messenger and Instagram send each new customer message to n8n. Echoes, reactions and read receipts are skipped.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <h3>Gemini reads it</h3>
+          <p>It returns JSON: intent, items by menu ID, pickup or delivery, address and language. Arabic, English and Franco all work.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <h3>Rules build the reply</h3>
+          <p>The cart is updated from the Menu tab, totals are calculated, and the bot asks only for what is missing: pickup or delivery, the address, then "confirm".</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">4</div>
+          <h3>The kitchen takes over</h3>
+          <p>A confirmed order lands in Orders and on Telegram. Each status the kitchen sets messages the customer in their own language.</p>
+        </div>
+      </div>
+
+      <!-- Interactive n8n Workflow Canvas -->
+      <div class="wf-box" id="workflows">
+        <div class="wf-bar">
+          <div class="wf-tabs" id="wfTabs">
+            <button type="button" class="wf-tab active" data-wf="wf1">Fenjan 1</button>
+            <button type="button" class="wf-tab" data-wf="wf2">Fenjan 2</button>
+          </div>
+          <div class="wf-stats" id="wfStats">23 nodes · 26 connections</div>
+        </div>
+
+        <div class="wf-canvas-shell" id="wfCanvasShell">
+          <div class="wf-zoom-controls">
+            <button type="button" class="zoom-btn" id="zoomOut">−</button>
+            <button type="button" class="zoom-btn" id="zoomReset">72%</button>
+            <button type="button" class="zoom-btn" id="zoomIn">+</button>
+          </div>
+          <div class="wf-stage" id="wfStage">
+            <svg class="wf-edges" id="wfEdges"></svg>
+          </div>
+        </div>
+
+        <div class="wf-footer">
+          <div id="wfDesc">The main bot: reads each DM, updates the cart, confirms orders, alerts the kitchen and replies on the same channel.</div>
+          <a class="btn-outline" id="wfDownloadBtn" href="./workflows/fenjan-1-dm-orders.json" download style="padding:8px 18px; font-size:12.5px;">Download JSON</a>
+        </div>
+      </div>
+
+      <!-- Bottom 3 Cards -->
+      <div class="info-grid">
+        <div class="info-card">
+          <h3>Built with</h3>
+          <ul>
+            <li>n8n (self-hosted)</li>
+            <li>Meta Graph API: Messenger, Instagram, Facebook Page</li>
+            <li>Google Gemini 3.5 Flash Lite</li>
+            <li>Google Sheets: Menu, Carts, Orders, Specials, Errors</li>
+            <li>Telegram for the kitchen and alerts</li>
+          </ul>
+        </div>
+        <div class="info-card">
+          <h3>Safeguards</h3>
+          <ul>
+            <li>Unknown or unavailable items are named, never added</li>
+            <li>Max 20 of one item; delivery needs an address</li>
+            <li>Orders are only confirmed 8:00 to midnight</li>
+            <li>Unreadable messages go to a person</li>
+            <li>Every failure is logged and sent to Telegram</li>
+          </ul>
+        </div>
+        <div class="info-card">
+          <h3>Run it yourself</h3>
+          <p>
+            Import both workflow JSON files, create the 5-tab Google Sheet (<code>Menu</code>, <code>Carts</code>, <code>Orders</code>, <code>Specials</code>, <code>Errors</code>), connect Meta, Google Sheets, Gemini and Telegram credentials, test locally with <strong>Sample DM</strong>, then activate <strong>Fenjan 2</strong> and <strong>Fenjan 1</strong>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div><strong>Fenjan Café · Order by DM</strong>, an n8n automation by Abdelrahman Mohamed.</div>
+    <div>AI Automation Portfolio · Cairo</div>
+  </footer>
+
+  <script>
+    /* =========================================================================
+       EMBEDDED WORKFLOW GRAPHS & DOCS
+       ========================================================================= */
+    const WORKFLOWS = {
+      wf1: {
+        file: './workflows/fenjan-1-dm-orders.json',
+        desc: 'The main bot: reads each DM, updates the cart, confirms orders, alerts the kitchen and replies on the same channel.',
+        data: {"name": "Fenjan 1 · DM Orders (Messenger + Instagram)", "nodeCount": 23, "connectionCount": 26, "nodes": [{"name": "Messenger Trigger", "type": "facebookTrigger", "position": [0, 0]}, {"name": "Instagram Trigger", "type": "facebookTrigger", "position": [0, 200]}, {"name": "Test Message", "type": "manualTrigger", "position": [-240, 420]}, {"name": "Sample DM", "type": "code", "position": [0, 420]}, {"name": "Read Message", "type": "code", "position": [280, 140]}, {"name": "Read Menu", "type": "googleSheets", "position": [520, 140]}, {"name": "Find Cart", "type": "googleSheets", "position": [760, 140]}, {"name": "Build AI Prompt", "type": "code", "position": [1000, 140]}, {"name": "AI Read Order", "type": "httpRequest", "position": [1240, 140]}, {"name": "Decide Reply", "type": "code", "position": [1480, 140]}, {"name": "Route Action", "type": "switch", "position": [1720, 140]}, {"name": "Order Row", "type": "code", "position": [2000, -180]}, {"name": "Save Order", "type": "googleSheets", "position": [2220, -180]}, {"name": "Close Cart Row", "type": "code", "position": [2440, -180]}, {"name": "Close Cart", "type": "googleSheets", "position": [2660, -180]}, {"name": "Kitchen Alert", "type": "telegram", "position": [2880, -180]}, {"name": "Cart Row", "type": "code", "position": [2000, 20]}, {"name": "Save Cart", "type": "googleSheets", "position": [2240, 20]}, {"name": "Empty Cart Row", "type": "code", "position": [2000, 200]}, {"name": "Empty Cart", "type": "googleSheets", "position": [2240, 200]}, {"name": "Call a Human", "type": "telegram", "position": [2000, 380]}, {"name": "Send Reply", "type": "facebookGraphApi", "position": [3160, 140]}, {"name": "Check Delivery", "type": "code", "position": [3400, 140]}], "connections": {"Messenger Trigger": {"main": [[{"node": "Read Message", "type": "main", "index": 0}]]}, "Instagram Trigger": {"main": [[{"node": "Read Message", "type": "main", "index": 0}]]}, "Test Message": {"main": [[{"node": "Sample DM", "type": "main", "index": 0}]]}, "Sample DM": {"main": [[{"node": "Read Message", "type": "main", "index": 0}]]}, "Read Message": {"main": [[{"node": "Read Menu", "type": "main", "index": 0}]]}, "Read Menu": {"main": [[{"node": "Find Cart", "type": "main", "index": 0}]]}, "Find Cart": {"main": [[{"node": "Build AI Prompt", "type": "main", "index": 0}]]}, "Build AI Prompt": {"main": [[{"node": "AI Read Order", "type": "main", "index": 0}]]}, "AI Read Order": {"main": [[{"node": "Decide Reply", "type": "main", "index": 0}]]}, "Decide Reply": {"main": [[{"node": "Route Action", "type": "main", "index": 0}]]}, "Route Action": {"main": [[{"node": "Order Row", "type": "main", "index": 0}], [{"node": "Cart Row", "type": "main", "index": 0}], [{"node": "Empty Cart Row", "type": "main", "index": 0}], [{"node": "Call a Human", "type": "main", "index": 0}], [{"node": "Send Reply", "type": "main", "index": 0}]]}, "Order Row": {"main": [[{"node": "Save Order", "type": "main", "index": 0}]]}, "Save Order": {"main": [[{"node": "Close Cart Row", "type": "main", "index": 0}]]}, "Close Cart Row": {"main": [[{"node": "Close Cart", "type": "main", "index": 0}]]}, "Close Cart": {"main": [[{"node": "Kitchen Alert", "type": "main", "index": 0}]]}, "Kitchen Alert": {"main": [[{"node": "Send Reply", "type": "main", "index": 0}]]}, "Cart Row": {"main": [[{"node": "Save Cart", "type": "main", "index": 0}]]}, "Save Cart": {"main": [[{"node": "Send Reply", "type": "main", "index": 0}]]}, "Empty Cart Row": {"main": [[{"node": "Empty Cart", "type": "main", "index": 0}]]}, "Empty Cart": {"main": [[{"node": "Send Reply", "type": "main", "index": 0}]]}, "Call a Human": {"main": [[{"node": "Send Reply", "type": "main", "index": 0}]]}, "Send Reply": {"main": [[{"node": "Check Delivery", "type": "main", "index": 0}]]}}}
+      },
+      wf2: {
+        file: './workflows/fenjan-2-kitchen-special-errors.json',
+        desc: 'Back office: kitchen status form that messages the customer, 9:00 daily Facebook Page special, and central error handler.',
+        data: {"name": "Fenjan 2 · Kitchen, Daily Special & Errors", "nodeCount": 21, "connectionCount": 19, "nodes": [{"name": "Kitchen Update", "type": "formTrigger", "position": [0, 0]}, {"name": "Find Order", "type": "googleSheets", "position": [240, 0]}, {"name": "Check Order", "type": "code", "position": [480, 0]}, {"name": "Order OK?", "type": "if", "position": [720, 0]}, {"name": "Status Row", "type": "code", "position": [980, -100]}, {"name": "Update Order", "type": "googleSheets", "position": [1220, -100]}, {"name": "Message Customer", "type": "facebookGraphApi", "position": [1460, -100]}, {"name": "Delivered?", "type": "if", "position": [1720, -160]}, {"name": "Done Page", "type": "form", "position": [2000, -240]}, {"name": "Message Failed Page", "type": "form", "position": [2000, -40]}, {"name": "Rejected Page", "type": "form", "position": [980, 140]}, {"name": "Every Morning 9:00", "type": "scheduleTrigger", "position": [0, 420]}, {"name": "Read Specials", "type": "googleSheets", "position": [240, 420]}, {"name": "Pick Today's Special", "type": "code", "position": [480, 420]}, {"name": "Post to Facebook Page", "type": "facebookGraphApi", "position": [720, 420]}, {"name": "Posted Row", "type": "code", "position": [960, 420]}, {"name": "Mark Posted", "type": "googleSheets", "position": [1200, 420]}, {"name": "Error Trigger", "type": "errorTrigger", "position": [0, 720]}, {"name": "Error Row", "type": "code", "position": [240, 720]}, {"name": "Log Error", "type": "googleSheets", "position": [480, 720]}, {"name": "Alert Team", "type": "telegram", "position": [720, 720]}], "connections": {"Kitchen Update": {"main": [[{"node": "Find Order", "type": "main", "index": 0}]]}, "Find Order": {"main": [[{"node": "Check Order", "type": "main", "index": 0}]]}, "Check Order": {"main": [[{"node": "Order OK?", "type": "main", "index": 0}]]}, "Order OK?": {"main": [[{"node": "Status Row", "type": "main", "index": 0}], [{"node": "Rejected Page", "type": "main", "index": 0}]]}, "Status Row": {"main": [[{"node": "Update Order", "type": "main", "index": 0}]]}, "Update Order": {"main": [[{"node": "Message Customer", "type": "main", "index": 0}]]}, "Message Customer": {"main": [[{"node": "Delivered?", "type": "main", "index": 0}], [{"node": "Message Failed Page", "type": "main", "index": 0}]]}, "Delivered?": {"main": [[{"node": "Done Page", "type": "main", "index": 0}], [{"node": "Message Failed Page", "type": "main", "index": 0}]]}, "Every Morning 9:00": {"main": [[{"node": "Read Specials", "type": "main", "index": 0}]]}, "Read Specials": {"main": [[{"node": "Pick Today's Special", "type": "main", "index": 0}]]}, "Pick Today's Special": {"main": [[{"node": "Post to Facebook Page", "type": "main", "index": 0}]]}, "Post to Facebook Page": {"main": [[{"node": "Posted Row", "type": "main", "index": 0}]]}, "Posted Row": {"main": [[{"node": "Mark Posted", "type": "main", "index": 0}]]}, "Error Trigger": {"main": [[{"node": "Error Row", "type": "main", "index": 0}]]}, "Error Row": {"main": [[{"node": "Log Error", "type": "main", "index": 0}]]}, "Log Error": {"main": [[{"node": "Alert Team", "type": "main", "index": 0}]]}}}
+      }
+    };
+
+    const NODE_DOCS = {
+      'Messenger Trigger': 'Receives incoming Messenger DMs via Meta Page webhooks.',
+      'Instagram Trigger': 'Receives incoming Instagram DMs linked to the café Business account.',
+      'Test Message': 'Manual trigger to test the whole DM pipeline locally before Meta is connected.',
+      'Sample DM': 'Injects a Meta-shaped test message payload for local cart & order testing.',
+      'Read Message': 'Skips page echoes, reactions, and read receipts; identifies Messenger vs Instagram.',
+      'Read Menu': 'Loads all 14 bilingual menu items, prices, and availability flags from Google Sheets.',
+      'Find Cart': 'Looks up the sender\'s open cart by customer_id with Always Output Data enabled.',
+      'Build AI Prompt': 'Combines the live menu, open cart, and customer DM into one JSON-only Gemini prompt.',
+      'AI Read Order': 'Calls Gemini 3.5 Flash Lite to classify intent, item IDs, fulfilment, address, and language.',
+      'Decide Reply': 'Applies all café rules: sheet prices, 25 EGP delivery fee, max 20 qty, and 8:00–24:00 Cairo hours.',
+      'Route Action': '5-way switch routing confirm, cart, clear, human, and reply.',
+      'Order Row': 'Shapes the confirmed order payload to match the Orders sheet headers.',
+      'Save Order': 'Appends the confirmed order row to the Orders tab.',
+      'Close Cart Row': 'Marks the customer\'s cart row closed after confirmation.',
+      'Close Cart': 'Updates the Carts sheet matched by customer_id.',
+      'Kitchen Alert': 'Posts the new order summary and kitchen update form link to Telegram.',
+      'Cart Row': 'Builds the updated open cart row with items_json and running total.',
+      'Save Cart': 'Upserts the customer\'s open cart in Google Sheets.',
+      'Empty Cart Row': 'Builds a cleared/closed cart payload when the customer cancels.',
+      'Empty Cart': 'Clears the customer\'s cart row in Google Sheets.',
+      'Call a Human': 'Alerts staff on Telegram when a customer complains or AI cannot parse the message.',
+      'Send Reply': 'Replies to the customer on Messenger or Instagram via Meta Graph API.',
+      'Check Delivery': 'Converts silent Meta 4xx/error responses into real n8n errors routed to Fenjan 2.',
+      'Kitchen Update': 'n8n Form Trigger (/form/fenjan-kitchen) for staff to update order status.',
+      'Find Order': 'Looks up the order_id in the Orders tab.',
+      'Check Order': 'Validates Order ID format, cancellation state, pickup vs delivery, and builds AR/EN notice.',
+      'Order OK?': 'Routes valid updates to sheet + Meta reply, or invalid ones to Rejected Page.',
+      'Status Row': 'Formats order_id, new status, and Cairo timestamp.',
+      'Update Order': 'Updates the status column in the Orders tab matched by order_id.',
+      'Message Customer': 'Sends the status update DM back to the customer via Meta Graph API.',
+      'Delivered?': 'Checks whether Meta accepted the reply within the 24-hour messaging window.',
+      'Done Page': 'Form completion page confirming the customer was notified.',
+      'Message Failed Page': 'Form completion page noting status was saved but Meta refused the DM.',
+      'Rejected Page': 'Form completion page listing validation errors so nothing is overwritten.',
+      'Every Morning 9:00': 'Daily Cairo-timezone schedule trigger for the café\'s morning special.',
+      'Read Specials': 'Reads scheduled posts from the Specials tab.',
+      'Pick Today\'s Special': 'Finds today\'s row where posted != yes, or stops quietly.',
+      'Post to Facebook Page': 'Publishes today\'s bilingual special post to the Facebook Page feed.',
+      'Posted Row': 'Checks for Meta errors and prepares posted=yes + post_id.',
+      'Mark Posted': 'Updates today\'s row in the Specials tab matched by date.',
+      'Error Trigger': 'Catches unhandled errors thrown by Fenjan 1.',
+      'Error Row': 'Captures timestamp, workflow name, failed node, error message, and execution URL.',
+      'Log Error': 'Appends the incident to the Errors tab (Continue on Error enabled).',
+      'Alert Team': 'Posts the formatted error alert to the staff Telegram group.'
+    };
+
+    /* =========================================================================
+       REAL 14-ITEM MENU & 7 DAILY SPECIALS FROM THE BUILD GUIDE
+       ========================================================================= */
+    const INITIAL_MENU = [
+      { item_id: 'D01', name_en: 'Turkish Coffee',    name_ar: 'قهوة تركي',        category: 'Hot drinks',  price_egp: 45,  available: 'yes', keywords: 'turkish, ahwa, قهوة, تركي, mazboot, قهوه' },
+      { item_id: 'D02', name_en: 'Espresso',          name_ar: 'اسبريسو',          category: 'Hot drinks',  price_egp: 55,  available: 'yes', keywords: 'espresso, اسبرسو, اسبريسو' },
+      { item_id: 'D03', name_en: 'Cappuccino',        name_ar: 'كابتشينو',         category: 'Hot drinks',  price_egp: 75,  available: 'yes', keywords: 'cappuccino, كابتشينو, capp' },
+      { item_id: 'D04', name_en: 'Spanish Latte',     name_ar: 'سبانش لاتيه',      category: 'Hot drinks',  price_egp: 95,  available: 'yes', keywords: 'spanish, latte, سبانش, لاتيه' },
+      { item_id: 'D05', name_en: 'Mint Tea',          name_ar: 'شاي بالنعناع',     category: 'Hot drinks',  price_egp: 35,  available: 'yes', keywords: 'tea, shai, شاي, نعناع' },
+      { item_id: 'C01', name_en: 'Iced Caramel Latte',name_ar: 'آيس كراميل لاتيه', category: 'Cold drinks', price_egp: 105, available: 'yes', keywords: 'iced, caramel, ايس, كراميل, آيس' },
+      { item_id: 'C02', name_en: 'Karkade (Hibiscus)',name_ar: 'كركديه',           category: 'Cold drinks', price_egp: 40,  available: 'yes', keywords: 'karkade, hibiscus, كركديه' },
+      { item_id: 'C03', name_en: 'Fresh Mango Juice', name_ar: 'عصير مانجو',       category: 'Cold drinks', price_egp: 80,  available: 'yes', keywords: 'mango, juice, مانجو, عصير' },
+      { item_id: 'B01', name_en: 'Cheese Croissant',  name_ar: 'كرواسون جبنة',     category: 'Bakery',      price_egp: 65,  available: 'yes', keywords: 'croissant, كرواسون, كرواسان' },
+      { item_id: 'B02', name_en: 'Zaatar Manousheh',  name_ar: 'مناقيش زعتر',      category: 'Bakery',      price_egp: 55,  available: 'yes', keywords: 'zaatar, manousheh, زعتر, مناقيش' },
+      { item_id: 'B03', name_en: 'Feteer Meshaltet',  name_ar: 'فطير مشلتت',       category: 'Bakery',      price_egp: 90,  available: 'yes', keywords: 'feteer, فطير, مشلتت' },
+      { item_id: 'S01', name_en: 'Konafa Cup',        name_ar: 'كنافة كب',         category: 'Sweets',      price_egp: 85,  available: 'yes', keywords: 'konafa, kunafa, كنافة, كنافه' },
+      { item_id: 'S02', name_en: 'Basbousa',          name_ar: 'بسبوسة',           category: 'Sweets',      price_egp: 50,  available: 'yes', keywords: 'basbousa, بسبوسة, بسبوسه' },
+      { item_id: 'S03', name_en: 'Chocolate Cookie',  name_ar: 'كوكي شوكولاتة',    category: 'Sweets',      price_egp: 40,  available: 'yes', keywords: 'cookie, كوكي, كوكيز' }
+    ];
+
+    const DAILY_POSTS = [
+      'صباح الفل! قهوة تركي + مناقيش زعتر بـ 90 جنيه بس النهارده. ابعتلنا "منيو" في الرسايل ☕\nGood morning! Turkish coffee + zaatar manousheh for 90 EGP today. DM us "menu" to order.',
+      'الجو حر؟ آيس كراميل لاتيه مستنيك. اطلبه من الماسنجر أو الانستجرام 🧊\nIced Caramel Latte is calling. Order by DM and we will ping you when it is ready.',
+      'كرواسون جبنة طازة طالع من الفرن دلوقتي. اكتبلنا "2 كرواسون" في الرسايل 🥐\nFresh cheese croissants just out of the oven. DM "2 croissant".',
+      'خميس الحلويات: كنافة كب + سبانش لاتيه. ابعت "تحلية" ونقترح عليك 🍯\nSweet Thursday: konafa cup + Spanish latte. DM us!',
+      'كركديه ساقع ومنعش بـ 40 جنيه بس. الطلب كله من الرسايل 🌺\nIced karkade for 40 EGP. Order fully by DM, no calls, no waiting.',
+      'فنجان بيرد عليك في الرسايل 24 ساعة. جرب تطلب بالعربي أو بالإنجليزي أو حتى فرانكو 😉\nFenjan answers DMs any time. Order in Arabic, English or Franco.',
+      'توصيل لحد باب البيت بـ 25 جنيه. ابعت طلبك وعنوانك في رسالة واحدة 🛵\nDelivery to your door for 25 EGP. Send your order and address in one message.'
+    ];
+
+    const DELIVERY_FEE = 25;
+    const OPEN_HOUR = 8;
+    const MAX_QTY = 20;
+
+    let state = {};
+
+    function cairoTodayISO(offsetDays = 0) {
+      const d = new Date();
+      d.setDate(d.getDate() + offsetDays);
+      return d.toISOString().slice(0, 10);
+    }
+
+    function cairoNowStamp() {
+      const d = new Date();
+      return d.toISOString().slice(0, 10) + ' ' + d.toTimeString().slice(0, 5);
+    }
+
+    function makeOrderId() {
+      const d = new Date();
+      const yy = String(d.getFullYear()).slice(-2);
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      const rand = Math.random().toString(36).slice(2, 6).toUpperCase().padEnd(4, 'X');
+      return `F-${yy}${mm}${dd}-${rand}`;
+    }
+
+    function escapeHtml(s) {
+      return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function resetDemo() {
+      state = {
+        channel: 'Messenger',
+        chats: {
+          Messenger: [],
+          Instagram: []
+        },
+        menu: INITIAL_MENU.map(m => ({ ...m })),
+        carts: [],
+        orders: [],
+        specials: DAILY_POSTS.map((text, idx) => ({
+          date: cairoTodayISO(idx),
+          text,
+          posted: 'no',
+          post_id: ''
+        })),
+        errors: [],
+        fbPosts: [],
+        sheetTab: 'orders'
+      };
+      document.getElementById('clockSelect').value = 'open';
+      document.getElementById('failMetaCheck').checked = false;
+      setChannel('Messenger');
+      setExecStatus('idle');
+      document.getElementById('execLog').innerHTML = '<div class="log-empty">Send a message: each node of the workflow appears here as it runs.</div>';
+      document.getElementById('tgFeed').innerHTML = '<div class="tg-empty">New orders and "call a human" alerts arrive here. Status buttons stand in for the kitchen update form.</div>';
+      renderFbPosts();
+      renderSheet();
+    }
+
+    /* =========================================================================
+       CHANNEL SWITCHER & CHAT RENDERING
+       ========================================================================= */
+    function senderIdForChannel(ch) {
+      return ch === 'Instagram' ? 'igsid-9042' : 'psid-7781';
+    }
+
+    function setChannel(ch) {
+      state.channel = ch;
+      const phone = document.getElementById('dmPhone');
+      phone.classList.toggle('ig', ch === 'Instagram');
+      document.getElementById('dmChannelSub').textContent = `${ch} · replies instantly`;
+      document.getElementById('dmMetaBar').textContent = `${ch} chat · customer ${senderIdForChannel(ch)}`;
+      document.querySelectorAll('.ch-btn').forEach(b => b.classList.toggle('active', b.dataset.ch === ch));
+      renderChatMessages();
+    }
+
+    function renderChatMessages() {
+      const box = document.getElementById('dmMessages');
+      const list = state.chats[state.channel];
+      box.innerHTML = '';
+      list.forEach(m => {
+        const div = document.createElement('div');
+        const isAr = /[\u0600-\u06FF]/.test(m.text);
+        div.className = `dm-bubble ${m.who}` + (isAr ? ' ar' : '');
+        div.textContent = m.text;
+        box.appendChild(div);
+      });
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function pushChat(ch, who, text) {
+      state.chats[ch].push({ who, text });
+      if (state.channel === ch) renderChatMessages();
+    }
+
+    /* =========================================================================
+       EXECUTION LOG HELPERS
+       ========================================================================= */
+    function setExecStatus(s) {
+      const el = document.getElementById('execStatus');
+      el.className = 'status-pill ' + (s === 'idle' ? '' : s);
+      el.textContent = s;
+    }
+
+    function clearLog() { document.getElementById('execLog').innerHTML = ''; }
+
+    function addLog(node, detail, tone = 'ok', ms = null) {
+      const log = document.getElementById('execLog');
+      const el = document.createElement('div');
+      el.className = 'log-step';
+      const t = ms !== null ? `${ms}ms` : `${Math.floor(25 + Math.random() * 110)}ms`;
+      el.innerHTML = `
+        <span class="log-dot ${tone === 'ok' ? '' : tone}"></span>
+        <div class="log-text">
+          <div class="log-node">${escapeHtml(node)}</div>
+          <div class="log-detail">${escapeHtml(detail)}</div>
+        </div>
+        <span class="log-ms">${t}</span>`;
+      log.appendChild(el);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    /* =========================================================================
+       LOCAL GEMINI SIMULATOR + EXACT DECIDE REPLY ENGINE
+       ========================================================================= */
+    function toLatinDigits(str) {
+      return str.replace(/[٠-٩]/g, d => '0123456789'['٠١٢٣٤٥٦٧٨٩'.indexOf(d)]);
+    }
+
+    function simulateGemini(rawText, openCart) {
+      const text = toLatinDigits(rawText).trim();
+      const lower = text.toLowerCase();
+      const hasAr = /[\u0600-\u06FF]/.test(text);
+      const hasFranco = /\b(3ayez|3ayza|ahwa|shai|tawseel|estelam|akeed|tamam|mashy|balash)\b/i.test(lower);
+      const language = (hasAr || hasFranco) ? 'ar' : 'en';
+
+      // Human escalation / complaint
+      if (/(complaint|cold|manager|human|person|talk to someone|bad|wrong|مشكلة|بارد|اكلم حد|خدمة العملاء|مسؤول)/.test(lower)) {
+        return { intent: 'human', items: [], remove: [], replace_cart: false, fulfilment: '', address: '', language, answer: '' };
+      }
+
+      // Cancel
+      if (/^(cancel|clear|nevermind|الغاء|الغي|إلغاء|امسح|كنسل|balash)$/.test(lower) || /\b(cancel my order|clear cart|امسح السلة|الغي الطلب)\b/.test(lower)) {
+        return { intent: 'cancel', items: [], remove: [], replace_cart: false, fulfilment: '', address: '', language, answer: '' };
+      }
+
+      // Confirm
+      if (/^(confirm|yes|ok|okay|yep|place order|تأكيد|تاكيد|أكد|اكد|تمام|ماشي|موافق|tamam|akeed|mashy)[.!؟?]*$/.test(lower)) {
+        return { intent: 'confirm', items: [], remove: [], replace_cart: false, fulfilment: '', address: '', language, answer: '' };
+      }
+
+      // Menu
+      if (/^(menu|prices|منيو|المنيو|الأسعار|الاسعار|عندكم ايه|عندكم إيه)[؟?]*$/.test(lower) || /\b(what do you have|show menu|see menu)\b/.test(lower)) {
+        return { intent: 'menu', items: [], remove: [], replace_cart: false, fulfilment: '', address: '', language, answer: '' };
+      }
+
+      // Greeting
+      if (/^(hi|hello|hey|good morning|good evening|salam|اهلا|أهلا|أهلاً|سلام|السلام عليكم|صباح الخير|مساء الخير|ازيك)[!؟?]*$/.test(lower)) {
+        return { intent: 'greeting', items: [], remove: [], replace_cart: false, fulfilment: '', address: '', language, answer: '' };
+      }
+
+      // Detect fulfilment
+      let fulfilment = '';
+      if (/(delivery|deliver|توصيل|ديليفري|دليفري|tawseel)/.test(lower)) fulfilment = 'delivery';
+      else if (/(pickup|pick up|takeaway|استلام|من المحل|estelam)/.test(lower)) fulfilment = 'pickup';
+
+      // Detect remove items
+      const isRemove = /\b(remove|delete|drop|without|شيل|امسح|بلاش|من غير)\b/.test(lower);
+      const matchedItems = [];
+      const removeIds = [];
+
+      // Match known menu items (check multi-word specific items first like iced caramel latte before spanish latte)
+      const orderedMenu = [...state.menu].sort((a, b) => b.name_en.length - a.name_en.length);
+      let working = lower;
+
+      for (const m of orderedMenu) {
+        const kwList = [m.name_en.toLowerCase(), m.name_ar.toLowerCase(), ...m.keywords.split(',').map(s => s.trim().toLowerCase())]
+          .filter(Boolean)
+          .sort((a, b) => b.length - a.length);
+
+        let hitKw = null;
+        for (const kw of kwList) {
+          if (kw.length < 3) continue;
+          if (working.includes(kw)) {
+            hitKw = kw;
+            break;
+          }
+        }
+        if (hitKw) {
+          // Look for a quantity right before the matched keyword
+          const idx = working.indexOf(hitKw);
+          const before = working.slice(Math.max(0, idx - 12), idx);
+          const numMatch = before.match(/(\d+)\s*(?:x|×)?\s*$/);
+          const qty = numMatch ? parseInt(numMatch[1], 10) : 1;
+
+          if (isRemove) removeIds.push(m.item_id);
+          else matchedItems.push({ item_id: m.item_id, qty });
+
+          // Blank matched keyword so "iced caramel latte" doesn't also trigger "latte" -> D04
+          working = working.slice(0, idx) + ' '.repeat(hitKw.length) + working.slice(idx + hitKw.length);
+        }
+      }
+
+      // Check unknown item questions like "do you have pizza?" or "1 burger"
+      const unknownMatch = lower.match(/(?:do you have|want|order|عايز|عندكم)\s+(?:a\s+|\d+\s+)?(pizza|burger|pasta|sushi|pepsi|cola|بيتزا|برجر|شاورما)/i);
+      if (unknownMatch && matchedItems.length === 0 && removeIds.length === 0) {
+        return {
+          intent: 'order',
+          items: [{ item_id: unknownMatch[1], qty: 1 }],
+          remove: [],
+          replace_cart: false,
+          fulfilment,
+          address: '',
+          language,
+          answer: ''
+        };
+      }
+
+      if (matchedItems.length > 0 || removeIds.length > 0) {
+        // Also extract inline address if present (e.g. "street", "شارع", "عمارة")
+        let address = '';
+        const addrMatch = text.match(/(?:شارع|عمارة|برج|ميدان|st\.|street|maadi|nasr city|zamalek|heliopolis|المعادي|مدينة نصر|الزمالك|مصر الجديدة).*/i);
+        if (addrMatch && addrMatch[0].length > 5) address = addrMatch[0].trim();
+        return { intent: 'order', items: matchedItems, remove: removeIds, replace_cart: false, fulfilment, address, language, answer: '' };
+      }
+
+      // Address-only or fulfilment-only details
+      const looksLikeAddress = text.length > 5 && (
+        /(شارع|عمارة|دور|شقة|المعادي|مدينة نصر|الزمالك|التجمع|الشيخ زايد|اكتوبر|أكتوبر|street|st\b|maadi|zamalek|nasr|cairo|bldg|apt|floor)/i.test(text) ||
+        (openCart && openCart.fulfilment === 'delivery' && !openCart.address)
+      );
+      if (fulfilment || looksLikeAddress) {
+        return {
+          intent: 'details',
+          items: [],
+          remove: [],
+          replace_cart: false,
+          fulfilment,
+          address: looksLikeAddress ? text : '',
+          language,
+          answer: ''
+        };
+      }
+
+      // General question fallback
+      return {
+        intent: 'question',
+        items: [],
+        remove: [],
+        replace_cart: false,
+        fulfilment: '',
+        address: '',
+        language,
+        answer: language === 'ar'
+          ? 'فنجان مفتوح يومياً من ٨ الصبح لنص الليل. التوصيل بـ ٢٥ جنيه والاستلام من المحل مجاني!'
+          : 'Fenjan Café is open daily from 8:00 AM to midnight. Delivery is 25 EGP and pickup is free!'
+      };
+    }
+
+    function runDecideReply(platform, senderId, rawText, ai) {
+      const byId = Object.fromEntries(state.menu.map(m => [m.item_id.toUpperCase(), m]));
+      const isOn = m => /^(yes|true|1|y)$/i.test(String(m.available || 'yes').trim());
+      const cartRow = state.carts.find(r => r.customer_id === senderId && r.status === 'open');
+
+      let cart = [];
+      try { cart = cartRow ? JSON.parse(cartRow.items_json || '[]') : []; } catch (_) { cart = []; }
+      let fulfilment = cartRow?.fulfilment || '';
+      let address = cartRow?.address || '';
+
+      const ar = ai ? ai.language === 'ar' : /[\u0600-\u06FF]/.test(rawText);
+      const t = (en, a) => ar ? a : en;
+      const EGP = t('EGP', 'ج.م');
+
+      if (ai && ['pickup', 'delivery'].includes(ai.fulfilment)) fulfilment = ai.fulfilment;
+      if (ai && String(ai.address || '').trim().length > 5) address = String(ai.address).trim().slice(0, 200);
+
+      const sub = () => cart.reduce((s, l) => s + l.qty * l.price, 0);
+      const fee = () => fulfilment === 'delivery' ? DELIVERY_FEE : 0;
+
+      const cartText = () =>
+        cart.map(l => `${l.qty} × ${ar ? l.name_ar : l.name} — ${l.qty * l.price} ${EGP}`).join('\n')
+        + (fee() ? `\n${t('Delivery', 'التوصيل')} — ${fee()} ${EGP}` : '')
+        + `\n${t('Total', 'الإجمالي')}: ${sub() + fee()} ${EGP}`;
+
+      const menuText = () => {
+        const cats = {};
+        for (const m of state.menu.filter(isOn)) {
+          (cats[m.category] = cats[m.category] || []).push(`${m.item_id} · ${ar ? m.name_ar : m.name_en} — ${m.price_egp}`);
+        }
+        return t('☕ Fenjan menu (EGP)', '☕ منيو فنجان (بالجنيه)')
+          + Object.entries(cats).map(([c, l]) => `\n\n${c}\n` + l.join('\n')).join('')
+          + t('\n\nJust type your order, e.g. "2 spanish latte and a croissant, delivery".', '\n\nاكتب طلبك، مثلاً: "٢ سبانش لاتيه وكرواسون، توصيل".');
+      };
+
+      const nextStep = () =>
+        !fulfilment
+          ? t('Pickup or delivery?', 'استلام من المحل ولا توصيل؟')
+          : fulfilment === 'delivery' && !address
+            ? t('Please send your delivery address.', 'ابعتلي عنوان التوصيل.')
+            : t('Reply "confirm" to place your order.', 'اكتب "تأكيد" عشان نبدأ نحضر طلبك.');
+
+      const isOpen = document.getElementById('clockSelect').value === 'open';
+      const order_id = makeOrderId();
+
+      let action = 'reply', reply = '';
+      const notes = [];
+      const intent = ai?.intent;
+
+      if (!intent) {
+        action = 'human';
+        reply = t("Sorry, I couldn't read that one. A team member will reply here shortly.", 'معلش مقدرتش أفهم الرسالة دي. حد من الفريق هيرد عليك هنا حالاً.');
+      } else if (intent === 'greeting' || intent === 'menu') {
+        reply = (intent === 'greeting' ? t('Welcome to Fenjan! ☕\n\n', 'أهلاً بيك في فنجان! ☕\n\n') : '') + menuText();
+      } else if (intent === 'order' || intent === 'details') {
+        if (ai.replace_cart) cart = [];
+        for (const id of (ai.remove || [])) {
+          cart = cart.filter(l => l.item_id !== String(id).trim().toUpperCase());
+        }
+        for (const it of (ai.items || [])) {
+          const id = String(it.item_id || '').trim().toUpperCase();
+          const m = byId[id];
+          if (!m) {
+            notes.push(t(`I couldn't find "${it.item_id}" on the menu.`, `مش لاقي "${it.item_id}" في المنيو.`));
+            continue;
+          }
+          if (!isOn(m)) {
+            notes.push(t(`${m.name_en} is not available today.`, `${m.name_ar} مش متاح النهاردة.`));
+            continue;
+          }
+          const rawQty = parseInt(it.qty, 10) || 1;
+          const qty = Math.min(MAX_QTY, Math.max(1, rawQty));
+          if (rawQty > MAX_QTY) {
+            notes.push(t(`Max ${MAX_QTY} per item — capped ${m.name_en} at ${MAX_QTY}.`, `الحد الأقصى ${MAX_QTY} لكل صنف — ظبطنا ${m.name_ar} على ${MAX_QTY}.`));
+          }
+          const ex = cart.find(l => l.item_id === id);
+          if (ex) ex.qty = Math.min(MAX_QTY, ex.qty + qty);
+          else cart.push({ item_id: id, name: m.name_en, name_ar: m.name_ar, price: Number(m.price_egp) || 0, qty });
+        }
+        if (!cart.length) {
+          action = cartRow ? 'clear' : 'reply';
+          reply = (notes.length ? notes.join('\n') + '\n\n' : '') + menuText();
+        } else {
+          action = 'cart';
+          reply = (notes.length ? notes.join('\n') + '\n\n' : '') + t('Your order:\n', 'طلبك:\n') + cartText() + '\n\n' + nextStep();
+        }
+      } else if (intent === 'confirm') {
+        if (!cart.length) {
+          reply = t('Your cart is empty. Tell me what you would like:\n\n', 'السلة فاضية، قولي تحب تطلب إيه:\n\n') + menuText();
+        } else if (!fulfilment || (fulfilment === 'delivery' && !address)) {
+          action = 'cart';
+          reply = t('Almost there! ', 'خلاص قربنا! ') + nextStep();
+        } else if (!isOpen) {
+          action = 'cart';
+          reply = t(
+            `We are closed now (open ${OPEN_HOUR}:00 until midnight). Your cart is saved, confirm again when we open.`,
+            `إحنا قافلين دلوقتي (بنفتح من ${OPEN_HOUR} الصبح لنص الليل). سلتك محفوظة، أكد تاني لما نفتح.`
+          );
+        } else {
+          action = 'confirm';
+          reply = t(`✅ Order ${order_id} confirmed!\n\n`, `✅ تم تأكيد طلبك ${order_id}!\n\n`)
+            + cartText() + '\n\n'
+            + (fulfilment === 'delivery'
+              ? t(`Delivery to: ${address}\nWe will message you when it is on the way.`, `التوصيل على: ${address}\nهنبعتلك أول ما يخرج للتوصيل.`)
+              : t('We will message you when it is ready for pickup.', 'هنبعتلك أول ما يجهز للاستلام.'));
+        }
+      } else if (intent === 'cancel') {
+        action = cartRow ? 'clear' : 'reply';
+        reply = t('Done, your cart is cleared. Send anything to start again.', 'تمام، السلة اتمسحت. ابعت أي حاجة ونبدأ من جديد.');
+      } else if (intent === 'human') {
+        action = 'human';
+        reply = t('Sure, a team member will reply here shortly.', 'أكيد، حد من الفريق هيرد عليك هنا حالاً.');
+      } else {
+        reply = (String(ai.answer || '').trim() || t('How can I help? Type "menu" to see what we have.', 'أقدر أساعدك إزاي؟ اكتب "منيو" تشوف عندنا إيه.'))
+          + (cart.length ? '\n\n' + t('Your cart:\n', 'سلتك:\n') + cartText() + '\n\n' + nextStep() : '');
+      }
+
+      return {
+        action,
+        reply,
+        platform,
+        sender_id: senderId,
+        text: rawText,
+        language: ar ? 'ar' : 'en',
+        order_id,
+        items_json: JSON.stringify(cart),
+        items_text: cart.map(l => `${l.qty} × ${l.name}`).join(', '),
+        subtotal: sub(),
+        delivery: fee(),
+        total: sub() + fee(),
+        fulfilment,
+        address,
+        now: cairoNowStamp()
+      };
+    }
+
+    function upsertCart(row) {
+      const idx = state.carts.findIndex(c => c.customer_id === row.customer_id);
+      if (idx >= 0) state.carts[idx] = row;
+      else state.carts.unshift(row);
+    }
+
+    async function handleIncomingDM(text) {
+      const ch = state.channel;
+      const senderId = senderIdForChannel(ch);
+      pushChat(ch, 'user', text);
+
+      clearLog();
+      setExecStatus('running');
+      addLog(`${ch} Trigger`, `Incoming DM from ${senderId}`, 'info', 10);
+      await wait(120);
+      addLog('Read Message', `platform=${ch} · echoes skipped`, 'ok', 14);
+      await wait(120);
+      addLog('Read Menu', `Loaded ${state.menu.length} items from Menu tab`, 'ok', 84);
+      await wait(120);
+
+      const openCart = state.carts.find(r => r.customer_id === senderId && r.status === 'open');
+      addLog('Find Cart', openCart ? `Open cart found (${openCart.total_egp} EGP)` : 'No open cart (Always Output Data)', 'ok', 66);
+      await wait(120);
+      addLog('Build AI Prompt', 'Packed Menu + Current Cart + Customer DM', 'ok', 18);
+      await wait(180);
+
+      const ai = simulateGemini(text, openCart);
+      addLog('AI Read Order', `Gemini → intent="${ai.intent}" lang="${ai.language}"`, 'ok', 340);
+      await wait(130);
+
+      const d = runDecideReply(ch, senderId, text, ai);
+      addLog('Decide Reply', `action="${d.action}" · total=${d.total} EGP`, d.action === 'human' ? 'warn' : 'ok', 22);
+      await wait(120);
+      addLog('Route Action', `Switch → output "${d.action}"`, 'ok', 8);
+      await wait(130);
+
+      if (d.action === 'confirm') {
+        const orderRow = {
+          order_id: d.order_id,
+          created_at: d.now,
+          platform: d.platform,
+          customer_id: d.sender_id,
+          language: d.language,
+          items: d.items_text,
+          subtotal_egp: d.subtotal,
+          delivery_egp: d.delivery,
+          total_egp: d.total,
+          fulfilment: d.fulfilment,
+          address: d.address,
+          status: 'new',
+          updated_at: d.now
+        };
+        state.orders.unshift(orderRow);
+        upsertCart({
+          customer_id: d.sender_id,
+          platform: d.platform,
+          items_json: '[]',
+          fulfilment: '',
+          address: '',
+          total_egp: 0,
+          status: 'closed',
+          updated_at: d.now
+        });
+        state.sheetTab = 'orders';
+        renderSheet();
+        addLog('Order Row → Save Order', `Appended ${d.order_id} to Orders tab`, 'ok', 110);
+        await wait(120);
+        addLog('Close Cart Row → Close Cart', `Closed cart for ${d.sender_id}`, 'ok', 92);
+        await wait(120);
+        postKitchenTelegram(orderRow);
+        addLog('Kitchen Alert', `Sent ${d.order_id} to Fenjan Kitchen Telegram`, 'info', 85);
+      } else if (d.action === 'cart') {
+        upsertCart({
+          customer_id: d.sender_id,
+          platform: d.platform,
+          items_json: d.items_json,
+          fulfilment: d.fulfilment,
+          address: d.address,
+          total_egp: d.total,
+          status: 'open',
+          updated_at: d.now
+        });
+        state.sheetTab = 'carts';
+        renderSheet();
+        addLog('Cart Row → Save Cart', `Upserted open cart (${d.total} EGP)`, 'ok', 96);
+      } else if (d.action === 'clear') {
+        upsertCart({
+          customer_id: d.sender_id,
+          platform: d.platform,
+          items_json: '[]',
+          fulfilment: '',
+          address: '',
+          total_egp: 0,
+          status: 'closed',
+          updated_at: d.now
+        });
+        state.sheetTab = 'carts';
+        renderSheet();
+        addLog('Empty Cart Row → Empty Cart', `Cleared cart for ${d.sender_id}`, 'warn', 88);
+      } else if (d.action === 'human') {
+        postHumanTelegram(d);
+        addLog('Call a Human', `Escalated ${d.platform} DM to Telegram staff`, 'warn', 82);
+      }
+
+      await wait(130);
+
+      // Simulate Meta refusing a reply -> Fenjan 2 Error Handler
+      if (document.getElementById('failMetaCheck').checked) {
+        addLog('Send Reply', 'HTTP 400 · (#10) Outside 24-hour window / invalid Page ID', 'err', 140);
+        await wait(120);
+        const errMsg = `Meta did not deliver the reply to ${d.platform} customer ${d.sender_id}: (#10) Message refused by Graph API`;
+        addLog('Check Delivery', 'Threw Error → triggered Fenjan 2 Error Handler', 'err', 14);
+        await wait(140);
+        const errRow = {
+          time: cairoNowStamp(),
+          workflow: 'Fenjan 1 · DM Orders (Messenger + Instagram)',
+          node: 'Check Delivery',
+          message: errMsg,
+          execution_url: 'https://n8n.local/execution/demo'
+        };
+        state.errors.unshift(errRow);
+        state.sheetTab = 'errors';
+        renderSheet();
+        addLog('Fenjan 2 · Log Error → Alert Team', 'Logged to Errors tab & alerted Telegram', 'err', 95);
+        postErrorTelegram(errRow);
+        setExecStatus('error');
+        return;
+      }
+
+      addLog('Send Reply', `Graph API POST /messages → ${d.platform}`, 'ok', 112);
+      await wait(110);
+      addLog('Check Delivery', 'delivered: true · mid.fenjan_demo', 'ok', 9);
+      pushChat(ch, 'bot', d.reply);
+      setExecStatus('done');
+    }
+
+    /* =========================================================================
+       TELEGRAM STAFF FEED & FENJAN 2 KITCHEN FORM SIMULATION
+       ========================================================================= */
+    function clearTgEmpty() {
+      const feed = document.getElementById('tgFeed');
+      const emp = feed.querySelector('.tg-empty');
+      if (emp) emp.remove();
+    }
+
+    function postKitchenTelegram(order) {
+      clearTgEmpty();
+      const feed = document.getElementById('tgFeed');
+      const card = document.createElement('div');
+      card.className = 'tg-card';
+      card.innerHTML = `
+        <div class="tg-sender">Fenjan Bot · Kitchen Alert</div>☕ <strong>New order ${order.order_id} (${order.platform})</strong>
+${escapeHtml(order.items)}
+${order.total_egp} EGP · ${order.fulfilment}${order.address ? '\n📍 ' + escapeHtml(order.address) : ''}
+        <div class="tg-status-grid">
+          <button type="button" class="tg-act-btn" data-st="preparing">preparing</button>
+          <button type="button" class="tg-act-btn" data-st="ready">ready</button>
+          <button type="button" class="tg-act-btn" data-st="out_for_delivery">out_for_delivery</button>
+          <button type="button" class="tg-act-btn cancel" data-st="cancelled">cancelled</button>
+        </div>
+        <div class="tg-feedback" style="display:none;"></div>`;
+
+      card.querySelectorAll('.tg-act-btn').forEach(btn => {
+        btn.addEventListener('click', () => handleKitchenStatus(order.order_id, btn.dataset.st, card));
+      });
+      feed.prepend(card);
+    }
+
+    function postHumanTelegram(d) {
+      clearTgEmpty();
+      const feed = document.getElementById('tgFeed');
+      const card = document.createElement('div');
+      card.className = 'tg-card human';
+      card.innerHTML = `<div class="tg-sender">Fenjan Bot · Call a Human</div>🙋 A customer needs a person on ${d.platform}:
+"${escapeHtml(d.text)}"
+
+Reply from the page inbox in Meta Business Suite.`;
+      feed.prepend(card);
+    }
+
+    function postErrorTelegram(err) {
+      clearTgEmpty();
+      const feed = document.getElementById('tgFeed');
+      const card = document.createElement('div');
+      card.className = 'tg-card err';
+      card.innerHTML = `<div class="tg-sender">Fenjan 2 · Error Handler</div>🚨 Fenjan error in ${escapeHtml(err.workflow)} → ${escapeHtml(err.node)}
+${escapeHtml(err.message)}`;
+      feed.prepend(card);
+    }
+
+    async function handleKitchenStatus(orderId, status, cardEl) {
+      const fb = cardEl.querySelector('.tg-feedback');
+      const o = state.orders.find(r => r.order_id === orderId);
+      clearLog();
+      setExecStatus('running');
+      addLog('Fenjan 2 · Kitchen Update', `Form submitted: ${orderId} → ${status}`, 'info', 12);
+      await wait(110);
+      addLog('Find Order', `Matched ${orderId} in Orders sheet`, 'ok', 68);
+      await wait(110);
+
+      // Exact Check Order validation rules
+      const problems = [];
+      if (!o) problems.push(`Order ${orderId} was not found in the Orders sheet`);
+      else if (o.status === 'cancelled' && status !== 'cancelled') problems.push(`Order ${orderId} is already cancelled`);
+      if (o && status === 'out_for_delivery' && o.fulfilment !== 'delivery') problems.push(`Order ${orderId} is a pickup order`);
+
+      if (problems.length > 0) {
+        addLog('Check Order → Order OK?', `false · ${problems.join('; ')}`, 'err', 16);
+        addLog('Rejected Page', 'Nothing was changed', 'err', 8);
+        fb.style.display = 'block';
+        fb.className = 'tg-feedback err';
+        fb.textContent = `Rejected Page — Please fix: ${problems.join('; ')}`;
+        setExecStatus('error');
+        return;
+      }
+
+      addLog('Check Order → Order OK?', 'true · built bilingual customer notice', 'ok', 18);
+      await wait(110);
+      o.status = status;
+      o.updated_at = cairoNowStamp();
+      state.sheetTab = 'orders';
+      renderSheet();
+      addLog('Status Row → Update Order', `Orders.${orderId}.status = "${status}"`, 'ok', 95);
+      await wait(110);
+
+      const ar = o.language === 'ar';
+      const msgs = {
+        preparing: ar ? `☕ بنحضر طلبك ${orderId} دلوقتي.` : `☕ We are preparing your order ${orderId} now.`,
+        ready: ar ? `✅ طلبك ${orderId} جاهز للاستلام! مستنيينك في فنجان.` : `✅ Your order ${orderId} is ready for pickup! See you at Fenjan.`,
+        out_for_delivery: ar ? `🛵 طلبك ${orderId} في الطريق ليك على ${o.address || 'عنوانك'}.` : `🛵 Your order ${orderId} is on the way to ${o.address || 'you'}.`,
+        cancelled: ar ? `للأسف اضطرينا نلغي الطلب ${orderId}. رد علينا هنا وهنحلها.` : `Sorry, we had to cancel order ${orderId}. Reply here and we will sort it out.`
+      };
+
+      if (document.getElementById('failMetaCheck').checked) {
+        addLog('Message Customer → Delivered?', 'false · Meta refused message (24h window)', 'err', 110);
+        addLog('Message Failed Page', 'Status saved, message not sent', 'warn', 8);
+        fb.style.display = 'block';
+        fb.className = 'tg-feedback err';
+        fb.textContent = `Status saved as ${status}, but Meta refused the DM. Reply from Page inbox.`;
+        setExecStatus('error');
+        return;
+      }
+
+      pushChat(o.platform, 'bot', msgs[status]);
+      addLog('Message Customer → Done Page', `Customer notified on ${o.platform}`, 'ok', 102);
+      fb.style.display = 'block';
+      fb.className = 'tg-feedback ok';
+      fb.textContent = `✓ Done Page: ${orderId} is now "${status}" · ${o.platform} notified`;
+      setExecStatus('done');
+    }
+
+    /* =========================================================================
+       FACEBOOK DAILY SPECIAL (FENJAN 2 FLOW B)
+       ========================================================================= */
+    function renderFbPosts() {
+      const box = document.getElementById('fbPosts');
+      if (state.fbPosts.length === 0) {
+        box.innerHTML = '<div>No posts yet today. The daily special goes out at 9:00.</div>';
+        return;
+      }
+      box.innerHTML = state.fbPosts.map(p => `
+        <div class="fb-post">
+          <div class="fb-post-meta">✓ Posted ${p.date} · post_id: ${p.post_id}</div>
+          ${escapeHtml(p.text)}
+        </div>`).join('');
+    }
+
+    document.getElementById('runSpecialBtn').addEventListener('click', async () => {
+      clearLog();
+      setExecStatus('running');
+      addLog('Fenjan 2 · Every Morning 9:00', 'Triggered daily special job', 'info', 8);
+      await wait(110);
+      addLog('Read Specials', `Loaded ${state.specials.length} scheduled rows`, 'ok', 74);
+      await wait(110);
+
+      const today = cairoTodayISO(0);
+      const row = state.specials.find(r => r.date === today && r.posted !== 'yes')
+        || state.specials.find(r => r.posted !== 'yes');
+
+      if (!row) {
+        addLog("Pick Today's Special", 'All scheduled rows already posted — stopped quietly', 'warn', 14);
+        setExecStatus('done');
+        return;
+      }
+
+      addLog("Pick Today's Special", `Selected row for ${row.date}`, 'ok', 15);
+      await wait(120);
+      const postId = `109482716_${Math.floor(100000 + Math.random() * 899999)}`;
+      row.posted = 'yes';
+      row.post_id = postId;
+      state.fbPosts.unshift({ date: row.date, text: row.text, post_id: postId });
+      state.sheetTab = 'specials';
+      renderFbPosts();
+      renderSheet();
+      addLog('Post to Facebook Page', `POST /feed → id ${postId}`, 'ok', 138);
+      await wait(100);
+      addLog('Posted Row → Mark Posted', `Marked ${row.date} posted="yes" in Specials`, 'ok', 84);
+      setExecStatus('done');
+    });
+
+    /* =========================================================================
+       5-TAB GOOGLE SHEET RENDERER
+       ========================================================================= */
+    function renderSheet() {
+      document.querySelectorAll('.sheet-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === state.sheetTab));
+      const wrap = document.getElementById('sheetTableWrap');
+      const tab = state.sheetTab;
+
+      if (tab === 'menu') {
+        wrap.innerHTML = `
+          <table>
+            <thead><tr><th>item_id</th><th>name_en</th><th>name_ar</th><th>category</th><th>price_egp</th><th>available</th><th>keywords</th></tr></thead>
+            <tbody>
+              ${state.menu.map(m => `
+                <tr>
+                  <td class="strong">${m.item_id}</td>
+                  <td class="strong">${m.name_en}</td>
+                  <td style="font-family:'Cairo',sans-serif;">${m.name_ar}</td>
+                  <td>${m.category}</td>
+                  <td class="strong">${m.price_egp}</td>
+                  <td><button type="button" class="avail-toggle ${m.available === 'no' ? 'no' : ''}" data-id="${m.item_id}">${m.available}</button></td>
+                  <td>${escapeHtml(m.keywords)}</td>
+                </tr>`).join('')}
+            </tbody>
+          </table>`;
+        wrap.querySelectorAll('.avail-toggle').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const item = state.menu.find(x => x.item_id === btn.dataset.id);
+            if (item) {
+              item.available = item.available === 'yes' ? 'no' : 'yes';
+              renderSheet();
+            }
+          });
+        });
+      } else if (tab === 'carts') {
+        wrap.innerHTML = `
+          <table>
+            <thead><tr><th>customer_id</th><th>platform</th><th>items_json</th><th>fulfilment</th><th>address</th><th>total_egp</th><th>status</th><th>updated_at</th></tr></thead>
+            <tbody>
+              ${state.carts.length === 0
+                ? '<tr><td colspan="8" style="color:var(--text-muted); padding:18px 12px;">No rows yet.</td></tr>'
+                : state.carts.map(c => `
+                  <tr>
+                    <td class="strong">${c.customer_id}</td>
+                    <td>${c.platform}</td>
+                    <td>${escapeHtml(c.items_json)}</td>
+                    <td>${c.fulfilment || '—'}</td>
+                    <td>${escapeHtml(c.address || '—')}</td>
+                    <td class="strong">${c.total_egp}</td>
+                    <td><span class="badge ${c.status}">${c.status}</span></td>
+                    <td>${c.updated_at}</td>
+                  </tr>`).join('')}
+            </tbody>
+          </table>`;
+      } else if (tab === 'orders') {
+        wrap.innerHTML = `
+          <table>
+            <thead><tr><th>order_id</th><th>created_at</th><th>platform</th><th>customer_id</th><th>language</th><th>items</th><th>subtotal_egp</th><th>delivery_egp</th><th>total_egp</th><th>fulfilment</th><th>address</th><th>status</th><th>updated_at</th></tr></thead>
+            <tbody>
+              ${state.orders.length === 0
+                ? '<tr><td colspan="13" style="color:var(--text-muted); padding:18px 12px;">No rows yet.</td></tr>'
+                : state.orders.map(o => `
+                  <tr>
+                    <td class="strong">${o.order_id}</td>
+                    <td>${o.created_at}</td>
+                    <td>${o.platform}</td>
+                    <td>${o.customer_id}</td>
+                    <td>${o.language}</td>
+                    <td class="strong">${escapeHtml(o.items)}</td>
+                    <td>${o.subtotal_egp}</td>
+                    <td>${o.delivery_egp}</td>
+                    <td class="strong">${o.total_egp}</td>
+                    <td>${o.fulfilment}</td>
+                    <td>${escapeHtml(o.address || '—')}</td>
+                    <td><span class="badge ${o.status}">${o.status}</span></td>
+                    <td>${o.updated_at}</td>
+                  </tr>`).join('')}
+            </tbody>
+          </table>`;
+      } else if (tab === 'specials') {
+        wrap.innerHTML = `
+          <table>
+            <thead><tr><th>date</th><th>text</th><th>posted</th><th>post_id</th></tr></thead>
+            <tbody>
+              ${state.specials.map(s => `
+                <tr>
+                  <td class="strong">${s.date}</td>
+                  <td style="max-width:380px; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(s.text)}</td>
+                  <td><span class="badge ${s.posted}">${s.posted}</span></td>
+                  <td>${s.post_id || '—'}</td>
+                </tr>`).join('')}
+            </tbody>
+          </table>`;
+      } else {
+        wrap.innerHTML = `
+          <table>
+            <thead><tr><th>time</th><th>workflow</th><th>node</th><th>message</th><th>execution_url</th></tr></thead>
+            <tbody>
+              ${state.errors.length === 0
+                ? '<tr><td colspan="5" style="color:var(--text-muted); padding:18px 12px;">No rows yet.</td></tr>'
+                : state.errors.map(e => `
+                  <tr>
+                    <td>${e.time}</td>
+                    <td class="strong">${escapeHtml(e.workflow)}</td>
+                    <td class="strong">${escapeHtml(e.node)}</td>
+                    <td>${escapeHtml(e.message)}</td>
+                    <td>${escapeHtml(e.execution_url)}</td>
+                  </tr>`).join('')}
+            </tbody>
+          </table>`;
+      }
+    }
+
+    document.getElementById('sheetTabs').addEventListener('click', (e) => {
+      const btn = e.target.closest('.sheet-tab');
+      if (!btn) return;
+      state.sheetTab = btn.dataset.tab;
+      renderSheet();
+    });
+
+    /* =========================================================================
+       INTERACTIVE N8N WORKFLOW GRAPH
+       ========================================================================= */
+    let activeWf = 'wf1';
+    let wfZoom = window.innerWidth < 720 ? 0.56 : 0.72;
+
+    function shortType(t) {
+      const l = t.toLowerCase();
+      if (l.includes('facebooktrigger')) return 'Meta';
+      if (l.includes('facebookgraphapi')) return 'Graph API';
+      if (l.includes('googlesheets')) return 'Sheets';
+      if (l.includes('httprequest')) return 'HTTP';
+      if (l.includes('telegram')) return 'Telegram';
+      if (l.includes('formtrigger')) return 'Form Trigger';
+      if (l.includes('form')) return 'Form Page';
+      if (l.includes('schedule')) return 'Schedule';
+      if (l.includes('manual')) return 'Manual';
+      if (l.includes('error')) return 'Error';
+      if (l.includes('switch')) return 'Switch';
+      if (l.includes('if')) return 'If';
+      if (l.includes('code')) return 'Code';
+      return t;
+    }
+
+    async function renderWorkflow(key) {
+      activeWf = key;
+      const entry = WORKFLOWS[key];
+      let graph = entry.data;
+      try {
+        const res = await fetch(entry.file);
+        if (res.ok) {
+          const json = await res.json();
+          if (Array.isArray(json.nodes)) {
+            const cc = Object.values(json.connections || {}).reduce((acc, om) =>
+              acc + (om.main || []).reduce((a, b) => a + (b || []).length, 0), 0);
+            graph = {
+              name: json.name,
+              nodeCount: json.nodes.length,
+              connectionCount: cc,
+              nodes: json.nodes.map(n => ({ name: n.name, type: (n.type || '').replace('n8n-nodes-base.', ''), position: n.position })),
+              connections: json.connections || {}
+            };
+          }
+        }
+      } catch (_) {}
+
+      document.getElementById('wfStats').textContent = `${graph.nodeCount} nodes · ${graph.connectionCount} connections`;
+      document.getElementById('wfDesc').textContent = entry.desc;
+      document.getElementById('wfDownloadBtn').href = entry.file;
+
+      const stage = document.getElementById('wfStage');
+      const svg = document.getElementById('wfEdges');
+      stage.querySelectorAll('.wf-node').forEach(n => n.remove());
+      svg.innerHTML = '';
+
+      const xs = graph.nodes.map(n => n.position[0]);
+      const ys = graph.nodes.map(n => n.position[1]);
+      const minX = Math.min(...xs) - 50;
+      const minY = Math.min(...ys) - 50;
+      const maxX = Math.max(...xs) + 260;
+      const maxY = Math.max(...ys) + 150;
+      const width = maxX - minX;
+      const height = maxY - minY;
+
+      stage.style.width = width + 'px';
+      stage.style.height = height + 'px';
+      stage.style.transform = `scale(${wfZoom})`;
+      svg.setAttribute('width', width);
+      svg.setAttribute('height', height);
+      document.getElementById('zoomReset').textContent = Math.round(wfZoom * 100) + '%';
+
+      const posMap = {};
+      graph.nodes.forEach(n => {
+        const x = n.position[0] - minX;
+        const y = n.position[1] - minY;
+        posMap[n.name] = { x, y };
+
+        const el = document.createElement('div');
+        el.className = 'wf-node';
+        el.style.left = x + 'px';
+        el.style.top = y + 'px';
+        el.innerHTML = `
+          <div class="wf-node-name">${escapeHtml(n.name)}</div>
+          <div class="wf-node-type">${escapeHtml(shortType(n.type))}</div>`;
+        el.addEventListener('click', () => {
+          stage.querySelectorAll('.wf-node').forEach(x => x.classList.remove('selected'));
+          el.classList.add('selected');
+          const doc = NODE_DOCS[n.name] || `Executes ${n.name} (${n.type}).`;
+          document.getElementById('wfDesc').innerHTML = `<strong style="color:var(--teal);">${escapeHtml(n.name)}:</strong> ${escapeHtml(doc)}`;
+        });
+        stage.appendChild(el);
+      });
+
+      Object.entries(graph.connections || {}).forEach(([src, outMap]) => {
+        const from = posMap[src];
+        if (!from) return;
+        const branches = outMap.main || [];
+        branches.forEach((targets, bIdx) => {
+          (targets || []).forEach(t => {
+            const to = posMap[t.node];
+            if (!to) return;
+            const x1 = from.x + 170;
+            const y1 = from.y + 26 + (bIdx * 6 - (branches.length - 1) * 3);
+            const x2 = to.x;
+            const y2 = to.y + 26;
+            const dx = Math.max(45, Math.abs(x2 - x1) * 0.45);
+            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            path.setAttribute('d', `M ${x1} ${y1} C ${x1 + dx} ${y1}, ${x2 - dx} ${y2}, ${x2} ${y2}`);
+            path.setAttribute('fill', 'none');
+            path.setAttribute('stroke', 'rgba(184, 174, 160, 0.36)');
+            path.setAttribute('stroke-width', '1.8');
+            svg.appendChild(path);
+          });
+        });
+      });
+    }
+
+    document.getElementById('wfTabs').addEventListener('click', (e) => {
+      const btn = e.target.closest('.wf-tab');
+      if (!btn) return;
+      document.querySelectorAll('.wf-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderWorkflow(btn.dataset.wf);
+    });
+
+    document.getElementById('zoomIn').addEventListener('click', () => {
+      wfZoom = Math.min(1.2, +(wfZoom + 0.12).toFixed(2));
+      document.getElementById('wfStage').style.transform = `scale(${wfZoom})`;
+      document.getElementById('zoomReset').textContent = Math.round(wfZoom * 100) + '%';
+    });
+    document.getElementById('zoomOut').addEventListener('click', () => {
+      wfZoom = Math.max(0.36, +(wfZoom - 0.12).toFixed(2));
+      document.getElementById('wfStage').style.transform = `scale(${wfZoom})`;
+      document.getElementById('zoomReset').textContent = Math.round(wfZoom * 100) + '%';
+    });
+    document.getElementById('zoomReset').addEventListener('click', () => {
+      wfZoom = window.innerWidth < 720 ? 0.56 : 0.72;
+      document.getElementById('wfStage').style.transform = `scale(${wfZoom})`;
+      document.getElementById('zoomReset').textContent = Math.round(wfZoom * 100) + '%';
+    });
+
+    (function enableDrag() {
+      const shell = document.getElementById('wfCanvasShell');
+      let drag = false, sx = 0, sy = 0, sl = 0, st = 0;
+      shell.addEventListener('mousedown', (e) => {
+        if (e.target.closest('.wf-node') || e.target.closest('.wf-zoom-controls')) return;
+        drag = true; sx = e.pageX; sy = e.pageY; sl = shell.scrollLeft; st = shell.scrollTop;
+      });
+      window.addEventListener('mouseup', () => drag = false);
+      shell.addEventListener('mousemove', (e) => {
+        if (!drag) return;
+        e.preventDefault();
+        shell.scrollLeft = sl - (e.pageX - sx);
+        shell.scrollTop = st - (e.pageY - sy);
+      });
+    })();
+
+    /* =========================================================================
+       EVENTS, THEME & PARENT HUB SYNC
+       ========================================================================= */
+    document.getElementById('channelSwitch').addEventListener('click', (e) => {
+      const btn = e.target.closest('.ch-btn');
+      if (btn) setChannel(btn.dataset.ch);
+    });
+
+    document.getElementById('dmForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const inp = document.getElementById('dmInput');
+      const val = inp.value.trim();
+      if (!val) return;
+      inp.value = '';
+      handleIncomingDM(val);
+    });
+
+    document.getElementById('dmPills').addEventListener('click', (e) => {
+      const pill = e.target.closest('.dm-pill');
+      if (pill) handleIncomingDM(pill.dataset.msg);
+    });
+
+    document.getElementById('resetDemoBtn').addEventListener('click', resetDemo);
+
+    const themeBtn = document.getElementById('themeToggle');
+    themeBtn.addEventListener('click', () => {
+      const html = document.documentElement;
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      themeBtn.textContent = next === 'dark' ? '☾' : '☀';
+    });
+
+    window.addEventListener('message', (e) => {
+      if (e.data && e.data.type === 'fenjan-scroll' && e.data.section) {
+        const target = document.getElementById(e.data.section);
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+
+    // Boot
+    resetDemo();
+    renderWorkflow('wf1');
+  </script>
+</body>
+</html>
