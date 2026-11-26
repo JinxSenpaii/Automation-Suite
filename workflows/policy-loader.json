@@ -1,0 +1,263 @@
+{
+  "name": "Policy Loader",
+  "nodes": [
+    {
+      "parameters": {
+        "events": [
+          "init"
+        ]
+      },
+      "id": "1f8715ca-7569-4160-9fcc-c987638972b9",
+      "name": "When n8n Starts",
+      "type": "n8n-nodes-base.n8nTrigger",
+      "typeVersion": 1,
+      "position": [
+        -272,
+        256
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 7
+            }
+          ]
+        }
+      },
+      "id": "b02d34ff-285c-48a2-8ad3-d686412a22a2",
+      "name": "Every Morning 7 AM",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -272,
+        464
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "8b6f3d6d-78b3-4d6a-aaee-8b1e01b0dcfe",
+      "name": "Reload Now",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -272,
+        656
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "returnAll": true,
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "YOUR_ID",
+            "mode": "list",
+            "cachedResultName": "OMNA HR Policies"
+          },
+          "whatToSearch": "files"
+        },
+        "options": {}
+      },
+      "id": "f380f6c2-d3fa-4a0c-9a4f-8aa3a0ad105f",
+      "name": "List Policy Files",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        32,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $json.id }}"
+        },
+        "options": {
+          "googleFileConversion": {
+            "conversion": {
+              "docsToFormat": "text/plain"
+            }
+          }
+        }
+      },
+      "id": "f92fa598-15d5-48ac-9203-127560f076e2",
+      "name": "Download Policy",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        272,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "memoryKey": {
+          "__rl": true,
+          "value": "hr_policies",
+          "mode": "list",
+          "cachedResultName": "hr_policies"
+        },
+        "clearStore": true
+      },
+      "id": "b2948e82-24e6-4293-a600-1be530332966",
+      "name": "Reload Knowledge Base",
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreInMemory",
+      "typeVersion": 1.3,
+      "position": [
+        512,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "dataType": "binary",
+        "options": {
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "source",
+                "value": "={{ $binary.data.fileName }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "de16e863-97a1-482d-b193-14e2ec0fce97",
+      "name": "Read Policy Text",
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1,
+      "position": [
+        640,
+        688
+      ]
+    },
+    {
+      "parameters": {
+        "chunkOverlap": 200,
+        "options": {}
+      },
+      "id": "79ddd829-7696-4e27-a9ad-14e8c7f9a23e",
+      "name": "Split Into Chunks",
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        640,
+        864
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "1a55883d-4cd5-4da2-8ab0-0a63cf5350ec",
+      "name": "Gemini Embeddings",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        512,
+        688
+      ]
+    }
+  ],
+  "connections": {
+    "When n8n Starts": {
+      "main": [
+        [
+          {
+            "node": "List Policy Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Every Morning 7 AM": {
+      "main": [
+        [
+          {
+            "node": "List Policy Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reload Now": {
+      "main": [
+        [
+          {
+            "node": "List Policy Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List Policy Files": {
+      "main": [
+        [
+          {
+            "node": "Download Policy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Policy": {
+      "main": [
+        [
+          {
+            "node": "Reload Knowledge Base",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Policy Text": {
+      "ai_document": [
+        [
+          {
+            "node": "Reload Knowledge Base",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Into Chunks": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Read Policy Text",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini Embeddings": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Reload Knowledge Base",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "nodeGroups": []
+}
