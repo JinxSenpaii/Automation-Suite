@@ -1,0 +1,2432 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dawaa دواء — Pharmacy Assistant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0b1410;
+      --bg-elev: #0f1c16;
+      --card: #0c1712;
+      --card-2: #12211a;
+      --border: #1b3127;
+      --border-strong: #274739;
+      --text: #eef5f1;
+      --text-soft: #9fb3a8;
+      --text-muted: #6f877a;
+      --accent: #34d399;
+      --accent-2: #2dd4bf;
+      --accent-dark: #07291c;
+      --accent-btn-text: #062117;
+      --wa-bg: #0b1713;
+      --wa-header: #11241c;
+      --wa-in: #1b2c25;
+      --wa-out: #145338;
+      --wa-out-text: #ecfdf5;
+      --tg-bg: #0f1b28;
+      --tg-header: #4fa9e8;
+      --tg-card: #162638;
+      --danger: #f87171;
+      --danger-soft: rgba(248, 113, 113, 0.14);
+      --warn: #fbbf24;
+      --warn-soft: rgba(251, 191, 36, 0.14);
+      --ok: #34d399;
+      --ok-soft: rgba(52, 211, 153, 0.14);
+      --grid-dot: rgba(159, 179, 168, 0.16);
+      --shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+    }
+
+    html[data-theme="light"] {
+      --bg: #f4f8f5;
+      --bg-elev: #ffffff;
+      --card: #ffffff;
+      --card-2: #edf5f0;
+      --border: #d4e4da;
+      --border-strong: #b6d1c1;
+      --text: #0c1f16;
+      --text-soft: #3d5a4b;
+      --text-muted: #648071;
+      --accent: #0f9f6e;
+      --accent-2: #0d9488;
+      --accent-dark: #d9f5e8;
+      --accent-btn-text: #ffffff;
+      --wa-bg: #eef5f0;
+      --wa-header: #0f7653;
+      --wa-in: #ffffff;
+      --wa-out: #d9fdd3;
+      --wa-out-text: #0c2b1c;
+      --tg-bg: #e7f1fa;
+      --tg-header: #2b8fd6;
+      --tg-card: #ffffff;
+      --danger: #dc2626;
+      --danger-soft: rgba(220, 38, 38, 0.1);
+      --warn: #d97706;
+      --warn-soft: rgba(217, 119, 6, 0.12);
+      --ok: #059669;
+      --ok-soft: rgba(5, 150, 105, 0.12);
+      --grid-dot: rgba(12, 31, 22, 0.14);
+      --shadow: 0 10px 28px rgba(12, 31, 22, 0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.5;
+      transition: background 0.25s ease, color 0.25s ease;
+    }
+
+    /* ---------- HEADER ---------- */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: color-mix(in srgb, var(--bg) 90%, transparent);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .topbar-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 800;
+      font-size: 17px;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 7px;
+      background: var(--accent);
+      color: #052015;
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .brand-ar {
+      font-family: 'Cairo', sans-serif;
+      color: var(--accent);
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .nav-link {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-soft);
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 500;
+      padding: 7px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+
+    .nav-link:hover {
+      color: var(--text);
+      background: var(--card-2);
+    }
+
+    .nav-link.active {
+      color: var(--text);
+      background: var(--card-2);
+      border-color: var(--border-strong);
+      font-weight: 600;
+    }
+
+    .theme-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text-soft);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      font-size: 14px;
+      margin-left: 6px;
+      transition: all 0.18s ease;
+    }
+
+    .theme-btn:hover {
+      border-color: var(--accent);
+      color: var(--text);
+    }
+
+    /* ---------- MAIN SHELL ---------- */
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 24px 56px;
+      flex: 1;
+    }
+
+    .view { display: none; animation: fadeIn 0.22s ease; }
+    .view.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    /* ---------- HOME PAGE ---------- */
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 44px;
+      align-items: center;
+      margin-top: 12px;
+    }
+
+    .hero-title {
+      font-size: clamp(38px, 5vw, 62px);
+      font-weight: 900;
+      line-height: 1.03;
+      letter-spacing: -0.035em;
+      margin-bottom: 18px;
+    }
+
+    .hero-ar {
+      font-family: 'Cairo', sans-serif;
+      font-size: clamp(22px, 2.7vw, 31px);
+      font-weight: 800;
+      line-height: 1.35;
+      color: var(--accent);
+      direction: rtl;
+      text-align: right;
+      margin-bottom: 20px;
+    }
+
+    .hero-sub {
+      color: var(--text-soft);
+      font-size: 15.5px;
+      max-width: 520px;
+      margin-bottom: 28px;
+    }
+
+    .feature-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 30px;
+    }
+
+    .feature-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 16px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: left;
+    }
+
+    .feature-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      background: var(--card-2);
+    }
+
+    .feature-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .feature-card h3 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    .feature-card p {
+      font-size: 12.5px;
+      color: var(--text-soft);
+      line-height: 1.45;
+    }
+
+    .stats-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 34px;
+      padding-top: 8px;
+    }
+
+    .stat-num {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .hero-preview-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .preview-bubble {
+      padding: 11px 14px;
+      border-radius: 14px;
+      font-size: 13.5px;
+      max-width: 86%;
+      line-height: 1.5;
+    }
+
+    .preview-bubble.out {
+      align-self: flex-end;
+      background: var(--wa-out);
+      color: var(--wa-out-text);
+      border-bottom-right-radius: 4px;
+    }
+
+    .preview-bubble.in {
+      align-self: flex-start;
+      background: var(--wa-in);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-bottom-left-radius: 4px;
+    }
+
+    .preview-bubble.ar {
+      font-family: 'Cairo', sans-serif;
+      direction: rtl;
+    }
+
+    /* ---------- PAGE HEADERS ---------- */
+    .page-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .page-title {
+      font-size: clamp(28px, 3.4vw, 38px);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      margin-bottom: 6px;
+    }
+
+    .page-sub {
+      color: var(--text-soft);
+      font-size: 14.5px;
+      max-width: 680px;
+    }
+
+    .btn-ghost {
+      padding: 8px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border-strong);
+      background: var(--card);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--accent);
+      background: var(--card-2);
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 11px 16px;
+      border-radius: 10px;
+      border: none;
+      background: var(--accent);
+      color: var(--accent-btn-text);
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.08);
+      transform: translateY(-1px);
+    }
+
+    /* ---------- LIVE COUNTER 3-COLUMN ---------- */
+    .counter-grid {
+      display: grid;
+      grid-template-columns: 330px 1fr 330px;
+      gap: 18px;
+      margin-bottom: 22px;
+      align-items: stretch;
+    }
+
+    /* WhatsApp Panel */
+    .wa-phone {
+      background: var(--wa-bg);
+      border: 2px solid var(--border-strong);
+      border-radius: 26px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 540px;
+      box-shadow: var(--shadow);
+    }
+
+    .wa-header {
+      background: var(--wa-header);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      color: #ffffff;
+    }
+
+    .wa-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #ffffff;
+      color: #0d7a52;
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .wa-title { font-size: 14px; font-weight: 700; }
+    .wa-status { font-size: 11.5px; opacity: 0.8; }
+
+    .wa-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .wa-msg {
+      max-width: 88%;
+      padding: 9px 12px;
+      border-radius: 12px;
+      font-size: 12.5px;
+      line-height: 1.48;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .wa-msg.bot {
+      align-self: flex-start;
+      background: var(--wa-in);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-top-left-radius: 3px;
+    }
+
+    .wa-msg.user {
+      align-self: flex-end;
+      background: var(--wa-out);
+      color: var(--wa-out-text);
+      border-top-right-radius: 3px;
+    }
+
+    .wa-time {
+      display: block;
+      text-align: right;
+      font-size: 10px;
+      opacity: 0.65;
+      margin-top: 4px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .wa-rx-card {
+      background: rgba(0, 0, 0, 0.22);
+      border: 1px dashed rgba(255, 255, 255, 0.28);
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin-bottom: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+    }
+
+    .wa-pills {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding: 8px 12px 6px;
+      border-top: 1px solid var(--border);
+      background: color-mix(in srgb, var(--wa-bg) 92%, #000);
+    }
+
+    .wa-pill {
+      flex-shrink: 0;
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border-strong);
+      background: var(--card);
+      color: var(--text);
+      font-size: 11.5px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+
+    .wa-pill:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .wa-input-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 12px;
+      background: var(--wa-bg);
+    }
+
+    .wa-input {
+      flex: 1;
+      background: var(--card);
+      border: 1px solid var(--border-strong);
+      border-radius: 999px;
+      padding: 9px 14px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 12.5px;
+      outline: none;
+    }
+
+    .wa-input:focus { border-color: var(--accent); }
+
+    .wa-icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid var(--border-strong);
+      background: var(--card);
+      color: var(--text-soft);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      font-size: 15px;
+      flex-shrink: 0;
+      transition: all 0.15s ease;
+    }
+
+    .wa-icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    .wa-send-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: var(--accent);
+      color: var(--accent-btn-text);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      font-size: 14px;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    /* Execution Log Panel */
+    .log-panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      display: flex;
+      flex-direction: column;
+      height: 540px;
+      overflow: hidden;
+    }
+
+    .panel-head {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13.5px;
+      font-weight: 700;
+    }
+
+    .status-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: var(--card-2);
+      color: var(--text-soft);
+      border: 1px solid var(--border);
+    }
+
+    .status-pill.running { color: var(--warn); border-color: var(--warn); background: var(--warn-soft); }
+    .status-pill.done { color: var(--ok); border-color: var(--ok); background: var(--ok-soft); }
+    .status-pill.waiting { color: #60a5fa; border-color: #60a5fa; background: rgba(96, 165, 250, 0.14); }
+
+    .log-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .log-empty {
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    .log-step {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      animation: fadeIn 0.2s ease;
+    }
+
+    .log-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-top: 5px;
+      flex-shrink: 0;
+      background: var(--ok);
+    }
+    .log-dot.warn { background: var(--warn); }
+    .log-dot.err { background: var(--danger); }
+    .log-dot.info { background: #60a5fa; }
+
+    .log-node { font-weight: 600; color: var(--text); }
+    .log-detail { color: var(--text-soft); font-size: 11.5px; margin-top: 2px; }
+    .log-ms { margin-left: auto; color: var(--text-muted); font-size: 10.5px; flex-shrink: 0; }
+
+    /* Telegram Panel */
+    .tg-panel {
+      background: var(--tg-bg);
+      border: 1px solid rgba(79, 169, 232, 0.35);
+      border-radius: 18px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 540px;
+      box-shadow: var(--shadow);
+    }
+
+    .tg-header {
+      background: var(--tg-header);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      color: #ffffff;
+    }
+
+    .tg-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.22);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+
+    .tg-feed {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .tg-card {
+      background: var(--tg-card);
+      border: 1px solid rgba(79, 169, 232, 0.2);
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 12.5px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+
+    .tg-sender {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #5eb8f7;
+      margin-bottom: 4px;
+    }
+
+    .tg-btns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .tg-btn {
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .tg-btn.approve {
+      background: var(--ok-soft);
+      border-color: var(--ok);
+      color: var(--ok);
+    }
+    .tg-btn.approve:hover { background: var(--ok); color: #052015; }
+
+    .tg-btn.reject {
+      background: var(--danger-soft);
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+    .tg-btn.reject:hover { background: var(--danger); color: #ffffff; }
+
+    .tg-stamp {
+      margin-top: 8px;
+      padding: 6px 8px;
+      border-radius: 7px;
+      font-size: 11.5px;
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .tg-stamp.ok { background: var(--ok-soft); color: var(--ok); }
+    .tg-stamp.no { background: var(--danger-soft); color: var(--danger); }
+
+    /* ---------- GOOGLE SHEET WIDGET ---------- */
+    .sheet-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .sheet-bar {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .sheet-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13.5px;
+      font-weight: 700;
+    }
+
+    .sheet-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      background: #16a34a;
+      color: #ffffff;
+      display: grid;
+      place-items: center;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .sheet-hint {
+      font-weight: 400;
+      color: var(--text-muted);
+      font-size: 12.5px;
+    }
+
+    .sheet-tabs {
+      display: flex;
+      gap: 6px;
+    }
+
+    .sheet-tab {
+      padding: 5px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-soft);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .sheet-tab.active {
+      background: var(--text);
+      color: var(--bg);
+      border-color: var(--text);
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      max-height: 310px;
+      overflow-y: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+    }
+
+    thead th {
+      position: sticky;
+      top: 0;
+      background: var(--bg-elev);
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      text-align: left;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    tbody td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-soft);
+      white-space: nowrap;
+    }
+
+    tbody td.strong { color: var(--text); font-weight: 600; }
+
+    .stock-input {
+      width: 64px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border-strong);
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .stock-input.low {
+      border-color: var(--danger);
+      color: var(--danger);
+      background: var(--danger-soft);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .badge.reserved, .badge.approved { background: var(--ok-soft); color: var(--ok); }
+    .badge.pending_pharmacist { background: var(--warn-soft); color: var(--warn); }
+    .badge.rejected, .badge.expired, .badge.critical { background: var(--danger-soft); color: var(--danger); }
+    .badge.warning { background: var(--warn-soft); color: var(--warn); }
+
+    /* ---------- BACK OFFICE ---------- */
+    .clock-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .clock-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      padding: 7px 12px;
+      border-radius: 10px;
+      background: var(--card);
+      border: 1px solid var(--border-strong);
+      color: var(--text);
+    }
+
+    .bo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .bo-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .bo-card h3 { font-size: 16px; font-weight: 700; }
+    .bo-card p { font-size: 13px; color: var(--text-soft); }
+
+    .bo-output {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      color: var(--text-soft);
+      white-space: pre-wrap;
+      min-height: 76px;
+      max-height: 220px;
+      overflow-y: auto;
+      line-height: 1.5;
+    }
+
+    .preset-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .preset-chip {
+      padding: 5px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border-strong);
+      background: var(--card-2);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 11.5px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .preset-chip.active, .preset-chip:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .text-input {
+      width: 100%;
+      padding: 9px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border-strong);
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      outline: none;
+    }
+    .text-input:focus { border-color: var(--accent); }
+
+    /* ---------- WORKFLOWS VIEWER ---------- */
+    .wf-pills {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .wf-pill {
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--border-strong);
+      background: var(--card);
+      color: var(--text-soft);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .wf-pill.active {
+      background: var(--text);
+      color: var(--bg);
+      border-color: var(--text);
+    }
+
+    .wf-layout {
+      display: grid;
+      grid-template-columns: 1fr 310px;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .wf-canvas-shell {
+      position: relative;
+      height: 520px;
+      background-color: var(--card);
+      background-image: radial-gradient(var(--grid-dot) 1.2px, transparent 1.2px);
+      background-size: 20px 20px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: auto;
+      cursor: grab;
+    }
+
+    .wf-canvas-shell:active { cursor: grabbing; }
+
+    .wf-zoom-controls {
+      position: sticky;
+      top: 12px;
+      left: 12px;
+      z-index: 10;
+      display: inline-flex;
+      gap: 4px;
+      padding: 4px;
+      margin: 12px;
+      border-radius: 10px;
+      background: color-mix(in srgb, var(--bg-elev) 92%, transparent);
+      border: 1px solid var(--border-strong);
+      backdrop-filter: blur(8px);
+    }
+
+    .zoom-btn {
+      padding: 4px 10px;
+      border: none;
+      border-radius: 7px;
+      background: transparent;
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .zoom-btn:hover { background: var(--card-2); }
+
+    .wf-stage {
+      position: relative;
+      transform-origin: 0 0;
+    }
+
+    .wf-edges {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: visible;
+    }
+
+    .wf-node {
+      position: absolute;
+      width: 176px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: var(--bg-elev);
+      border: 1px solid var(--border-strong);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+      transition: border-color 0.15s ease, transform 0.15s ease;
+    }
+
+    .wf-node:hover, .wf-node.selected {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 30%, transparent);
+    }
+
+    .wf-node-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .wf-node-name {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.25;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .wf-node-type {
+      font-size: 10px;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .wf-inspector {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .wf-inspector h3 { font-size: 19px; font-weight: 800; line-height: 1.25; }
+
+    .wf-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .wf-chip {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      color: var(--accent);
+    }
+
+    .wf-node-detail {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 13px;
+      color: var(--text-soft);
+      line-height: 1.55;
+      flex: 1;
+    }
+
+    .wf-node-detail strong {
+      display: block;
+      color: var(--text);
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    /* ---------- FOOTER ---------- */
+    .footer {
+      border-top: 1px solid var(--border);
+      background: var(--bg-elev);
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .footer-title { font-size: 13.5px; font-weight: 700; }
+    .footer-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+    .tech-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tech-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      padding: 4px 9px;
+      border-radius: 6px;
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      color: var(--text-soft);
+    }
+
+    @media (max-width: 1020px) {
+      .hero-grid, .counter-grid, .bo-grid, .wf-layout {
+        grid-template-columns: 1fr;
+      }
+      .feature-row { grid-template-columns: 1fr; }
+      .wa-phone, .log-panel, .tg-panel { height: 460px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- TOP NAVIGATION -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#/home">
+        <span class="brand-icon">+</span>
+        <span>Dawaa</span>
+        <span class="brand-ar">دواء</span>
+      </a>
+      <nav class="nav" aria-label="Dawaa Sections">
+        <button class="nav-link active" data-route="home">Home</button>
+        <button class="nav-link" data-route="counter">Live counter</button>
+        <button class="nav-link" data-route="backoffice">Back office</button>
+        <button class="nav-link" data-route="workflows">Workflows</button>
+        <button class="theme-btn" id="themeToggle" title="Toggle light/dark mode">☾</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- ==================== VIEW 1: HOME ==================== -->
+    <section class="view active" id="view-home">
+      <div class="eyebrow">PHARMACY ASSISTANT · N8N · WHATSAPP · TELEGRAM</div>
+      <div class="hero-grid">
+        <div>
+          <h1 class="hero-title">Your pharmacy,<br>answering<br>WhatsApp<br>in seconds.</h1>
+          <div class="hero-ar">ابعت اسم الدوا أو صورة<br>الروشتة، ونحجزهولك ساعتين.</div>
+          <p class="hero-sub">
+            Customers send a medicine name or a photo of their prescription. AI reads it, matches it to the shelf, and either reserves it on the spot or asks the pharmacist on Telegram first.
+          </p>
+
+          <div class="feature-row">
+            <button class="feature-card" onclick="go('counter')">
+              <div class="feature-tag">CUSTOMER</div>
+              <h3>Order on WhatsApp</h3>
+              <p>Type a medicine or send a prescription photo</p>
+            </button>
+            <button class="feature-card" onclick="go('counter')">
+              <div class="feature-tag">PHARMACIST</div>
+              <h3>Approve on Telegram</h3>
+              <p>Prescriptions, controlled and out-of-stock items</p>
+            </button>
+            <button class="feature-card" onclick="go('backoffice')">
+              <div class="feature-tag">BACK OFFICE</div>
+              <h3>Stock &amp; alerts</h3>
+              <p>Expiry sweep, reorder list, error alerts</p>
+            </button>
+          </div>
+
+          <div class="stats-row">
+            <div>
+              <div class="stat-num">2 h</div>
+              <div class="stat-label">reservation hold</div>
+            </div>
+            <div>
+              <div class="stat-num">15 min</div>
+              <div class="stat-label">expiry sweep</div>
+            </div>
+            <div>
+              <div class="stat-num">22:00</div>
+              <div class="stat-label">daily reorder list</div>
+            </div>
+            <div>
+              <div class="stat-num">2</div>
+              <div class="stat-label">n8n workflows</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-preview-card">
+          <div class="preview-bubble out ar">عايز ٢ بانادول ٥٠٠</div>
+          <div class="preview-bubble in">
+            ✅ Reserved for 2 hours (REQ-261126-K7QD): 2 × Panadol 500 mg = 90 EGP. Total 90 EGP. Pick up from the pharmacy. / محجوز لمدة ساعتين.
+          </div>
+          <div class="preview-bubble out">Thanks!</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 2: LIVE COUNTER ==================== -->
+    <section class="view" id="view-counter">
+      <div class="page-head">
+        <div>
+          <div class="eyebrow">DAWAA 1 · REQUESTS &amp; RESERVATIONS</div>
+          <h2 class="page-title">The live counter</h2>
+          <p class="page-sub">
+            You are the customer on the left and the pharmacist on the right. The middle shows the workflow running node by node. Try a typo ("Panadool"), an out-of-stock item (Cidophage), a controlled medicine (Xanax) or a prescription photo.
+          </p>
+        </div>
+        <button class="btn-ghost" id="resetDemoBtn">Reset demo</button>
+      </div>
+
+      <div class="counter-grid">
+        <!-- WhatsApp Simulator -->
+        <div class="wa-phone">
+          <div class="wa-header">
+            <div class="wa-avatar">+</div>
+            <div>
+              <div class="wa-title">Dawaa Pharmacy</div>
+              <div class="wa-status">WhatsApp Business</div>
+            </div>
+          </div>
+          <div class="wa-messages" id="waMessages"></div>
+          <div class="wa-pills" id="waPills">
+            <button class="wa-pill" data-msg="Panadol 500 x2">Panadol 500 x2</button>
+            <button class="wa-pill" data-msg="عايز ٢ بانادول">عايز ٢ بانادول</button>
+            <button class="wa-pill" data-msg="Panadool">Panadool (typo)</button>
+            <button class="wa-pill" data-msg="Brufen 400">Brufen 400</button>
+            <button class="wa-pill" data-msg="Cidophage">Cidophage (0 stock)</button>
+            <button class="wa-pill" data-msg="Xanax 0.5mg">Xanax (controlled)</button>
+            <button class="wa-pill" data-rx="1">📷 Prescription photo</button>
+          </div>
+          <form class="wa-input-row" id="waForm">
+            <button type="button" class="wa-icon-btn" id="waPhotoBtn" title="Send sample prescription photo">📷</button>
+            <input class="wa-input" id="waInput" type="text" placeholder="Type a medicine... e.g. Brufen 400" autocomplete="off" />
+            <button type="submit" class="wa-send-btn" title="Send">➤</button>
+          </form>
+        </div>
+
+        <!-- Execution Log -->
+        <div class="log-panel">
+          <div class="panel-head">
+            <span>Execution log</span>
+            <span class="status-pill" id="execStatus">idle</span>
+          </div>
+          <div class="log-body" id="execLog">
+            <div class="log-empty">Send a WhatsApp message to start an execution.</div>
+          </div>
+        </div>
+
+        <!-- Telegram Pharmacist Group -->
+        <div class="tg-panel">
+          <div class="tg-header">
+            <div class="tg-avatar">Rx</div>
+            <div>
+              <div class="wa-title">Dawaa Pharmacists</div>
+              <div class="wa-status">Telegram group · bot</div>
+            </div>
+          </div>
+          <div class="tg-feed" id="tgFeed">
+            <div class="tg-card">
+              <div class="tg-sender">Dawaa Bot</div>Requests that need a pharmacist will appear here with Approve and Reject buttons.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Google Sheet (Counter instance) -->
+      <div class="sheet-card" data-sheet-host="counter"></div>
+    </section>
+
+    <!-- ==================== VIEW 3: BACK OFFICE ==================== -->
+    <section class="view" id="view-backoffice">
+      <div class="page-head">
+        <div>
+          <div class="eyebrow">DAWAA 2 · EXPIRY, STOCK &amp; ERRORS</div>
+          <h2 class="page-title">Back office</h2>
+          <p class="page-sub">
+            Three background jobs keep the shelf honest. Reservations not picked up in 2 hours expire and their stock goes back. Every night at 22:00, low stock becomes a reorder list. Any failure is classified and sent to the team.
+          </p>
+        </div>
+        <div class="clock-bar">
+          <div class="clock-pill" id="demoClockDisplay">Demo clock 13:30</div>
+          <button class="btn-ghost" id="advanceClockBtn">Advance 1 hour</button>
+        </div>
+      </div>
+
+      <div class="bo-grid">
+        <!-- Card 1: Expiry Sweep -->
+        <div class="bo-card">
+          <h3>Every 15 minutes: expiry sweep</h3>
+          <p>Finds reserved lines past their 2-hour hold, marks them expired, returns the stock and tells the customer.</p>
+          <button class="btn-primary" id="runSweepBtn">Run the sweep now</button>
+          <div class="bo-output" id="sweepOutput">Reserve something at the counter, advance the clock 2 hours, then run the sweep.</div>
+        </div>
+
+        <!-- Card 2: Reorder List -->
+        <div class="bo-card">
+          <h3>Every day 22:00: reorder list</h3>
+          <p>Every medicine at or below its reorder level goes to the pharmacists on Telegram and to purchasing by email.</p>
+          <button class="btn-primary" id="runReorderBtn">Build tonight's list</button>
+          <div class="bo-output" id="reorderOutput">Tip: Brufen (8/10) and Cidophage (0/10) are already below reorder level, or edit any stock number below.</div>
+        </div>
+
+        <!-- Card 3: Error Classifier -->
+        <div class="bo-card">
+          <h3>On any error: classify &amp; alert</h3>
+          <p>Every failure becomes one row: which workflow, which node, what kind of error. Critical ones are also emailed.</p>
+          <div class="preset-chips" id="errorPresets">
+            <button type="button" class="preset-chip active" data-node="Download Photo" data-msg="(#190) Error validating access token: Session has expired">WhatsApp token expired</button>
+            <button type="button" class="preset-chip" data-node="AI Read Request" data-msg="429 Resource exhausted: Gemini API quota exceeded">Gemini quota</button>
+            <button type="button" class="preset-chip" data-node="AI Read Request" data-msg="AxiosError: timeout of 60000ms exceeded (network)">Network</button>
+            <button type="button" class="preset-chip" data-node="Update Stock" data-msg="Google Sheets error: Sheet range not found">Stock validation</button>
+            <button type="button" class="preset-chip" data-node="Ask Pharmacist" data-msg="403 Forbidden: Telegram bot chat_id not configured">Telegram not set up</button>
+          </div>
+          <label style="font-size:11.5px; color:var(--text-muted); margin-bottom:-8px;">Error message</label>
+          <input class="text-input" id="errorMsgInput" value="(#190) Error validating access token: Session has expired" />
+          <button class="btn-primary" id="triggerErrorBtn">Trigger error</button>
+          <div class="bo-output" id="errorOutput">Pick a failure above and click Trigger error.</div>
+        </div>
+      </div>
+
+      <!-- Live Google Sheet (Back Office instance) -->
+      <div class="sheet-card" data-sheet-host="backoffice"></div>
+    </section>
+
+    <!-- ==================== VIEW 4: WORKFLOWS ==================== -->
+    <section class="view" id="view-workflows">
+      <div class="page-head">
+        <div>
+          <div class="eyebrow">UNDER THE HOOD</div>
+          <h2 class="page-title">The workflows</h2>
+          <p class="page-sub">
+            Drawn directly from the exported n8n JSON files. Click any node to read what it does. Downloads have all credentials and sheet IDs removed.
+          </p>
+        </div>
+      </div>
+
+      <div class="wf-pills" id="wfPills">
+        <button class="wf-pill active" data-wf="wf1">Dawaa 1 · Requests &amp; Reservations</button>
+        <button class="wf-pill" data-wf="wf2">Dawaa 2 · Expiry, Stock &amp; Errors</button>
+      </div>
+
+      <div class="wf-layout">
+        <div class="wf-canvas-shell" id="wfCanvasShell">
+          <div class="wf-zoom-controls">
+            <button class="zoom-btn" id="zoomOut">−</button>
+            <button class="zoom-btn" id="zoomReset">70%</button>
+            <button class="zoom-btn" id="zoomIn">+</button>
+          </div>
+          <div class="wf-stage" id="wfStage">
+            <svg class="wf-edges" id="wfEdges"></svg>
+          </div>
+        </div>
+
+        <aside class="wf-inspector">
+          <div class="eyebrow" style="margin-bottom:-6px;">WORKFLOW</div>
+          <h3 id="wfTitle">Dawaa 1 · Requests &amp; Reservations</h3>
+          <div class="wf-chips" id="wfChips"></div>
+          <div class="wf-node-detail" id="wfNodeDetail">
+            <strong>Click any node on the canvas</strong>
+            Inspect how each trigger, Gemini call, Google Sheets lookup, and Telegram approval step works inside n8n.
+          </div>
+          <a class="btn-ghost" id="wfDownloadBtn" href="./workflows/dawaa-1-requests-and-reservations.json" download style="text-align:center; text-decoration:none;">
+            ⬇ Download workflow JSON
+          </a>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-title">Built with n8n by Abdelrahman Mohamed</div>
+        <div class="footer-sub">Demo mode: the catalog and prices mirror the live Google Sheet, and a local parser stands in for Gemini.</div>
+      </div>
+      <div class="tech-pills">
+        <span class="tech-pill">n8n</span>
+        <span class="tech-pill">Gemini 3.5 Flash Lite</span>
+        <span class="tech-pill">WhatsApp Cloud API</span>
+        <span class="tech-pill">Telegram</span>
+        <span class="tech-pill">Google Sheets</span>
+        <span class="tech-pill">Gmail</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    /* =====================================================================
+       EMBEDDED WORKFLOW GRAPHS (fallback + live JSON fetch when hosted)
+       ===================================================================== */
+    const EMBEDDED_WORKFLOWS = {
+      wf1: {
+        file: './workflows/dawaa-1-requests-and-reservations.json',
+        title: 'Dawaa 1 · Requests & Reservations',
+        triggers: ['WhatsApp Trigger', 'Telegram Trigger'],
+        data: {"name": "Dawaa 1 - Requests & Reservations", "nodes": [{"name": "WhatsApp Trigger", "type": "whatsAppTrigger", "position": [0, 120]}, {"name": "Normalize Message", "type": "code", "position": [220, 120]}, {"name": "Is Photo?", "type": "if", "position": [440, 120]}, {"name": "Get Photo URL", "type": "whatsApp", "position": [680, 0]}, {"name": "Download Photo", "type": "httpRequest", "position": [900, 0]}, {"name": "Prepare Prescription Read", "type": "code", "position": [1120, 0]}, {"name": "Prepare Text Read", "type": "code", "position": [880, 260]}, {"name": "AI Read Request", "type": "httpRequest", "position": [1360, 120]}, {"name": "AI Failed: Ask Pharmacist", "type": "telegram", "position": [1580, 320]}, {"name": "Read Catalog", "type": "googleSheets", "position": [1580, 60]}, {"name": "Match Catalog", "type": "code", "position": [1800, 60]}, {"name": "Route Request", "type": "switch", "position": [2020, 60]}, {"name": "Nothing Found Reply", "type": "whatsApp", "position": [2280, -100]}, {"name": "One Row per Medicine", "type": "code", "position": [2280, 140]}, {"name": "Save Reservation Lines", "type": "googleSheets", "position": [2500, 140]}, {"name": "Auto or Pharmacist?", "type": "if", "position": [2720, 140]}, {"name": "Ask Pharmacist", "type": "telegram", "position": [2960, 40]}, {"name": "Tell Customer: Pharmacist Checking", "type": "whatsApp", "position": [3200, 40]}, {"name": "Take Stock Now", "type": "code", "position": [2960, 260]}, {"name": "Update Stock", "type": "googleSheets", "position": [3200, 260]}, {"name": "Confirm Reservation", "type": "whatsApp", "position": [3440, 260]}, {"name": "Telegram Trigger", "type": "telegramTrigger", "position": [0, 760]}, {"name": "Parse Decision", "type": "code", "position": [220, 760]}, {"name": "Find Pending Lines", "type": "googleSheets", "position": [440, 760]}, {"name": "Read Catalog (Decision)", "type": "googleSheets", "position": [660, 760]}, {"name": "Apply Decision", "type": "code", "position": [880, 760]}, {"name": "Answer Pharmacist", "type": "telegram", "position": [1100, 760]}, {"name": "Decision OK?", "type": "if", "position": [1320, 760]}, {"name": "Line Updates", "type": "code", "position": [1560, 680]}, {"name": "Update Lines", "type": "googleSheets", "position": [1780, 680]}, {"name": "Approved?", "type": "if", "position": [2000, 680]}, {"name": "Stock Rows", "type": "code", "position": [2240, 560]}, {"name": "Take Stock (Approved)", "type": "googleSheets", "position": [2480, 560]}, {"name": "Tell Customer: Approved", "type": "whatsApp", "position": [2720, 560]}, {"name": "Tell Customer: Rejected", "type": "whatsApp", "position": [2240, 780]}, {"name": "Mark Message Done", "type": "telegram", "position": [1780, 900]}], "connections": {"WhatsApp Trigger": {"main": [[{"node": "Normalize Message", "type": "main", "index": 0}]]}, "Normalize Message": {"main": [[{"node": "Is Photo?", "type": "main", "index": 0}]]}, "Is Photo?": {"main": [[{"node": "Get Photo URL", "type": "main", "index": 0}], [{"node": "Prepare Text Read", "type": "main", "index": 0}]]}, "Get Photo URL": {"main": [[{"node": "Download Photo", "type": "main", "index": 0}]]}, "Download Photo": {"main": [[{"node": "Prepare Prescription Read", "type": "main", "index": 0}]]}, "Prepare Prescription Read": {"main": [[{"node": "AI Read Request", "type": "main", "index": 0}]]}, "Prepare Text Read": {"main": [[{"node": "AI Read Request", "type": "main", "index": 0}]]}, "AI Read Request": {"main": [[{"node": "Read Catalog", "type": "main", "index": 0}], [{"node": "AI Failed: Ask Pharmacist", "type": "main", "index": 0}]]}, "Read Catalog": {"main": [[{"node": "Match Catalog", "type": "main", "index": 0}]]}, "Match Catalog": {"main": [[{"node": "Route Request", "type": "main", "index": 0}]]}, "Route Request": {"main": [[{"node": "Nothing Found Reply", "type": "main", "index": 0}], [{"node": "One Row per Medicine", "type": "main", "index": 0}], [{"node": "One Row per Medicine", "type": "main", "index": 0}]]}, "One Row per Medicine": {"main": [[{"node": "Save Reservation Lines", "type": "main", "index": 0}]]}, "Save Reservation Lines": {"main": [[{"node": "Auto or Pharmacist?", "type": "main", "index": 0}]]}, "Auto or Pharmacist?": {"main": [[{"node": "Ask Pharmacist", "type": "main", "index": 0}], [{"node": "Take Stock Now", "type": "main", "index": 0}]]}, "Ask Pharmacist": {"main": [[{"node": "Tell Customer: Pharmacist Checking", "type": "main", "index": 0}]]}, "Take Stock Now": {"main": [[{"node": "Update Stock", "type": "main", "index": 0}]]}, "Update Stock": {"main": [[{"node": "Confirm Reservation", "type": "main", "index": 0}]]}, "Telegram Trigger": {"main": [[{"node": "Parse Decision", "type": "main", "index": 0}]]}, "Parse Decision": {"main": [[{"node": "Find Pending Lines", "type": "main", "index": 0}]]}, "Find Pending Lines": {"main": [[{"node": "Read Catalog (Decision)", "type": "main", "index": 0}]]}, "Read Catalog (Decision)": {"main": [[{"node": "Apply Decision", "type": "main", "index": 0}]]}, "Apply Decision": {"main": [[{"node": "Answer Pharmacist", "type": "main", "index": 0}]]}, "Answer Pharmacist": {"main": [[{"node": "Decision OK?", "type": "main", "index": 0}]]}, "Decision OK?": {"main": [[{"node": "Line Updates", "type": "main", "index": 0}, {"node": "Mark Message Done", "type": "main", "index": 0}], []]}, "Line Updates": {"main": [[{"node": "Update Lines", "type": "main", "index": 0}]]}, "Update Lines": {"main": [[{"node": "Approved?", "type": "main", "index": 0}]]}, "Approved?": {"main": [[{"node": "Stock Rows", "type": "main", "index": 0}], [{"node": "Tell Customer: Rejected", "type": "main", "index": 0}]]}, "Stock Rows": {"main": [[{"node": "Take Stock (Approved)", "type": "main", "index": 0}]]}, "Take Stock (Approved)": {"main": [[{"node": "Tell Customer: Approved", "type": "main", "index": 0}]]}}}
+      },
+      wf2: {
+        file: './workflows/dawaa-2-error-handler.json',
+        title: 'Dawaa 2 · Expiry, Stock & Errors',
+        triggers: ['Error Trigger', 'Every 15 Minutes', 'Every Day 22:00'],
+        data: {"name": "Dawaa 2 - Error Handler & Maintenance", "nodes": [{"name": "Error Trigger", "type": "errorTrigger", "position": [0, 0]}, {"name": "Classify Error", "type": "code", "position": [240, 0]}, {"name": "Log Error", "type": "googleSheets", "position": [480, 0]}, {"name": "Alert Team", "type": "telegram", "position": [720, 0]}, {"name": "Critical?", "type": "if", "position": [960, 0]}, {"name": "Email Critical Error", "type": "gmail", "position": [1220, -40]}, {"name": "Every 15 Minutes", "type": "scheduleTrigger", "position": [0, 340]}, {"name": "Read Reservations", "type": "googleSheets", "position": [240, 340]}, {"name": "Read Catalog", "type": "googleSheets", "position": [480, 340]}, {"name": "Expired Lines", "type": "code", "position": [740, 260]}, {"name": "Mark Expired", "type": "googleSheets", "position": [980, 260]}, {"name": "Tell Customer: Expired", "type": "whatsApp", "position": [1220, 260]}, {"name": "Restock Totals", "type": "code", "position": [740, 480]}, {"name": "Return Stock", "type": "googleSheets", "position": [980, 480]}, {"name": "Every Day 22:00", "type": "scheduleTrigger", "position": [0, 760]}, {"name": "Read Stock", "type": "googleSheets", "position": [240, 760]}, {"name": "Find Low Stock", "type": "code", "position": [480, 760]}, {"name": "Post Reorder List", "type": "telegram", "position": [740, 720]}, {"name": "Email Reorder List", "type": "gmail", "position": [740, 920]}], "connections": {"Error Trigger": {"main": [[{"node": "Classify Error", "type": "main", "index": 0}]]}, "Classify Error": {"main": [[{"node": "Log Error", "type": "main", "index": 0}]]}, "Log Error": {"main": [[{"node": "Alert Team", "type": "main", "index": 0}]]}, "Alert Team": {"main": [[{"node": "Critical?", "type": "main", "index": 0}]]}, "Critical?": {"main": [[{"node": "Email Critical Error", "type": "main", "index": 0}], []]}, "Every 15 Minutes": {"main": [[{"node": "Read Reservations", "type": "main", "index": 0}]]}, "Read Reservations": {"main": [[{"node": "Read Catalog", "type": "main", "index": 0}]]}, "Read Catalog": {"main": [[{"node": "Expired Lines", "type": "main", "index": 0}, {"node": "Restock Totals", "type": "main", "index": 0}]]}, "Expired Lines": {"main": [[{"node": "Mark Expired", "type": "main", "index": 0}]]}, "Mark Expired": {"main": [[{"node": "Tell Customer: Expired", "type": "main", "index": 0}]]}, "Restock Totals": {"main": [[{"node": "Return Stock", "type": "main", "index": 0}]]}, "Every Day 22:00": {"main": [[{"node": "Read Stock", "type": "main", "index": 0}]]}, "Read Stock": {"main": [[{"node": "Find Low Stock", "type": "main", "index": 0}]]}, "Find Low Stock": {"main": [[{"node": "Post Reorder List", "type": "main", "index": 0}, {"node": "Email Reorder List", "type": "main", "index": 0}]]}}}
+      }
+    };
+
+    const NODE_DOCS = {
+      'WhatsApp Trigger': 'Listens for incoming customer text messages and prescription photos via Meta WhatsApp Business Cloud webhooks.',
+      'Normalize Message': 'Extracts sender phone, profile name, message type, media ID, and assigns a unique REQ-* request ID.',
+      'Is Photo?': 'Routes prescription images to the media download branch and plain text messages to the text prompt builder.',
+      'Get Photo URL': 'Calls Meta WhatsApp Media API to resolve the temporary download URL for the customer photo.',
+      'Download Photo': 'Downloads the binary JPEG/PNG prescription image using the connected WhatsApp API credential.',
+      'Prepare Prescription Read': 'Encodes the prescription image to base64 and builds the multimodal Gemini JSON prompt with safety rules.',
+      'Prepare Text Read': 'Builds the structured Gemini JSON extraction prompt for Arabic/English medicine requests.',
+      'AI Read Request': 'Calls Gemini 3.5 Flash Lite with JSON mode, 60s timeout, and automatic retries; errors route to the pharmacist fallback.',
+      'AI Failed: Ask Pharmacist': 'Sends an immediate Telegram alert if Gemini times out or is unavailable so no customer is dropped.',
+      'Read Catalog': 'Loads live medicine SKUs, strengths, stock quantities, prices, and controlled flags from Google Sheets.',
+      'Match Catalog': 'Matches extracted names & active ingredients against the catalog and decides auto-reserve vs. pharmacist review.',
+      'Route Request': 'Switches between Nothing Found Reply, Auto Reserve, and Needs Pharmacist.',
+      'Nothing Found Reply': 'Replies to greetings, non-prescription photos, or unrecognized medicine names via WhatsApp.',
+      'One Row per Medicine': 'Splits multi-item requests into one item per medicine line for clean spreadsheet logging.',
+      'Save Reservation Lines': 'Appends reservation rows (res_id, sku, qty, total_egp, status, expires_at) to the Reservations tab.',
+      'Auto or Pharmacist?': 'Separates OTC in-stock items for instant stock deduction from Rx/controlled/low-stock items needing approval.',
+      'Ask Pharmacist': 'Posts a summary card to the Telegram pharmacist group with Approve and Reject inline callback buttons.',
+      'Tell Customer: Pharmacist Checking': 'Notifies the customer on WhatsApp that a pharmacist is reviewing their request.',
+      'Take Stock Now': 'Aggregates quantities per SKU and computes the updated shelf stock for auto-reserved items.',
+      'Update Stock': 'Updates the stock column in the Catalog Google Sheet matched by SKU.',
+      'Confirm Reservation': 'Sends the bilingual 2-hour reservation confirmation and total EGP back to the customer on WhatsApp.',
+      'Telegram Trigger': 'Captures inline Approve/Reject button clicks (callback_query) from the pharmacist group.',
+      'Parse Decision': 'Extracts action (approved/rejected), request ID, chat ID, message ID, and pharmacist name.',
+      'Find Pending Lines': 'Reads Reservations from Google Sheets to locate all pending_pharmacist rows for that request.',
+      'Read Catalog (Decision)': 'Reads current Catalog stock before approving so concurrent orders never oversell.',
+      'Apply Decision': 'Verifies stock availability, prepares row_number status updates, stock deductions, and customer messages.',
+      'Answer Pharmacist': 'Acknowledges the Telegram button press with an instant toast status.',
+      'Decision OK?': 'Prevents double-processing or approving out-of-stock requests.',
+      'Line Updates': 'Expands pending lines so every medicine row in the request gets updated.',
+      'Update Lines': 'Updates status, pharmacist name, and note in Reservations matched by row_number.',
+      'Mark Message Done': 'Edits the original Telegram card with an APPROVED/REJECTED audit stamp.',
+      'Approved?': 'Splits approved orders (deduct stock + confirm) from rejected orders (send polite notice).',
+      'Stock Rows': 'Expands SKU stock decrements for approved pharmacist orders.',
+      'Take Stock (Approved)': 'Deducts approved quantities from the Catalog sheet matched by SKU.',
+      'Tell Customer: Approved': 'Sends the final approved reservation confirmation to the customer on WhatsApp.',
+      'Tell Customer: Rejected': 'Notifies the customer on WhatsApp that the request could not be fulfilled and suggests alternatives.',
+      'Error Trigger': 'Catches unhandled failures from Dawaa 1 automatically.',
+      'Classify Error': 'Categorizes auth, network, quota, and integration failures into critical vs. warning alerts.',
+      'Log Error': 'Appends structured error records to the Error Log tab in Google Sheets.',
+      'Alert Team': 'Posts formatted incident alerts to the pharmacy Telegram group.',
+      'Critical?': 'Escalates critical outages (expired tokens, network/sheet failures) to email.',
+      'Email Critical Error': 'Sends a full incident report via Gmail for critical failures.',
+      'Every 15 Minutes': 'Scheduled trigger sweeping expired 2-hour holds automatically.',
+      'Read Reservations': 'Loads active reservations to check expires_at timestamps.',
+      'Expired Lines': 'Finds reserved/approved/pending rows past their 2-hour hold.',
+      'Mark Expired': 'Marks expired rows in Reservations by row_number.',
+      'Tell Customer: Expired': 'Sends a WhatsApp notice letting the customer know their hold expired.',
+      'Restock Totals': 'Sums expired stock-deducted quantities per SKU to put back on the shelf.',
+      'Return Stock': 'Restores expired quantities back to the Catalog Google Sheet.',
+      'Every Day 22:00': 'Nightly schedule trigger generating the pharmacy purchasing list.',
+      'Read Stock': 'Reads all Catalog SKUs and reorder thresholds.',
+      'Find Low Stock': 'Filters SKUs at or below reorder_level and calculates suggested order quantities.',
+      'Post Reorder List': 'Posts tonight\'s low-stock purchasing list to Telegram.',
+      'Email Reorder List': 'Emails the formatted reorder report to purchasing via Gmail.'
+    };
+
+    /* =====================================================================
+       SHARED DEMO STATE (using your exact 10 SKUs from Google Sheets)
+       ===================================================================== */
+    const INITIAL_CATALOG = [
+      { sku: 'P001', name: 'Panadol',    active_ingredient: 'paracetamol',            strength: '500 mg', form: 'tablets x24',  price_egp: 45,  stock: 32, reorder_level: 10, controlled: 'no',  aliases: ['بانادول', 'بنادول', 'panadool', 'pandol'] },
+      { sku: 'P002', name: 'Abimol',     active_ingredient: 'paracetamol',            strength: '500 mg', form: 'tablets x20',  price_egp: 25,  stock: 60, reorder_level: 10, controlled: 'no',  aliases: ['ابيمول', 'أبيمول'] },
+      { sku: 'P003', name: 'Brufen',     active_ingredient: 'ibuprofen',              strength: '400 mg', form: 'tablets x30',  price_egp: 62,  stock: 8,  reorder_level: 10, controlled: 'no',  aliases: ['بروفين', 'بروفن', 'brufin'] },
+      { sku: 'P004', name: 'Augmentin',  active_ingredient: 'amoxicillin/clavulanate',strength: '1 g',    form: 'tablets x14',  price_egp: 185, stock: 15, reorder_level: 5,  controlled: 'no',  aliases: ['اوجمنتين', 'أوجمنتين', 'augmenten'] },
+      { sku: 'P005', name: 'Megamox',    active_ingredient: 'amoxicillin/clavulanate',strength: '1 g',    form: 'tablets x14',  price_egp: 120, stock: 22, reorder_level: 5,  controlled: 'no',  aliases: ['ميجاموكس'] },
+      { sku: 'P006', name: 'Concor',     active_ingredient: 'bisoprolol',             strength: '5 mg',   form: 'tablets x30',  price_egp: 98,  stock: 12, reorder_level: 5,  controlled: 'no',  aliases: ['كونكور'] },
+      { sku: 'P007', name: 'Glucophage', active_ingredient: 'metformin',              strength: '850 mg', form: 'tablets x50',  price_egp: 58,  stock: 30, reorder_level: 10, controlled: 'no',  aliases: ['جلوكوفاج'] },
+      { sku: 'P008', name: 'Cidophage',  active_ingredient: 'metformin',              strength: '850 mg', form: 'tablets x50',  price_egp: 38,  stock: 0,  reorder_level: 10, controlled: 'no',  aliases: ['سيدوفاج'] },
+      { sku: 'P009', name: 'Xanax',      active_ingredient: 'alprazolam',             strength: '0.5 mg', form: 'tablets x30',  price_egp: 70,  stock: 5,  reorder_level: 2,  controlled: 'yes', aliases: ['زاناكس'] },
+      { sku: 'P010', name: 'Antinal',    active_ingredient: 'nifuroxazide',           strength: '200 mg', form: 'capsules x24', price_egp: 30,  stock: 50, reorder_level: 10, controlled: 'no',  aliases: ['انتينال', 'أنتينال'] }
+    ];
+
+    let state = {};
+
+    function resetState() {
+      const startClock = new Date();
+      startClock.setHours(13, 30, 0, 0);
+      state = {
+        clockMs: startClock.getTime(),
+        catalog: INITIAL_CATALOG.map(c => ({ ...c })),
+        reservations: [],
+        errors: [],
+        sheetTab: 'catalog',
+        seq: 1
+      };
+      renderClock();
+      renderInitialChat();
+      renderInitialTelegram();
+      setExecStatus('idle');
+      document.getElementById('execLog').innerHTML = '<div class="log-empty">Send a WhatsApp message to start an execution.</div>';
+      document.getElementById('sweepOutput').textContent = 'Reserve something at the counter, advance the clock 2 hours, then run the sweep.';
+      document.getElementById('reorderOutput').textContent = 'Tip: Brufen (8/10) and Cidophage (0/10) are already below reorder level, or edit any stock number below.';
+      document.getElementById('errorOutput').textContent = 'Pick a failure above and click Trigger error.';
+      renderAllSheets();
+    }
+
+    function fmtTime(ms) {
+      const d = new Date(ms);
+      return d.toTimeString().slice(0, 5);
+    }
+
+    function makeReqId() {
+      const tag = Math.random().toString(36).slice(2, 6).toUpperCase();
+      return `REQ-${String(state.seq++).padStart(2, '0')}${tag}`;
+    }
+
+    /* =====================================================================
+       NAVIGATION & THEME
+       ===================================================================== */
+    function go(route) {
+      window.location.hash = '#/' + route;
+    }
+
+    function syncRoute() {
+      const raw = (window.location.hash || '#/home').replace(/^#\/?/, '').split('/')[0] || 'home';
+      const valid = ['home', 'counter', 'backoffice', 'workflows'].includes(raw) ? raw : 'home';
+      document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + valid));
+      document.querySelectorAll('.nav-link').forEach(btn => btn.classList.toggle('active', btn.dataset.route === valid));
+      if (valid === 'workflows') {
+        setTimeout(() => renderWorkflowCanvas(activeWfKey), 30);
+      }
+    }
+
+    document.querySelectorAll('.nav-link').forEach(btn => {
+      btn.addEventListener('click', () => go(btn.dataset.route));
+    });
+    window.addEventListener('hashchange', syncRoute);
+
+    const themeBtn = document.getElementById('themeToggle');
+    themeBtn.addEventListener('click', () => {
+      const html = document.documentElement;
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      themeBtn.textContent = next === 'dark' ? '☾' : '☀';
+    });
+
+    /* =====================================================================
+       WHATSAPP + EXECUTION LOG + TELEGRAM SIMULATOR
+       ===================================================================== */
+    function renderInitialChat() {
+      const box = document.getElementById('waMessages');
+      box.innerHTML = '';
+      appendWa('bot', 'Hello! Send the medicine name (e.g. Panadol 500) or a clear photo of the prescription. / ابعت اسم الدوا أو صورة واضحة للروشتة.');
+    }
+
+    function renderInitialTelegram() {
+      document.getElementById('tgFeed').innerHTML = `
+        <div class="tg-card">
+          <div class="tg-sender">Dawaa Bot</div>Requests that need a pharmacist will appear here with Approve and Reject buttons.
+        </div>`;
+    }
+
+    function appendWa(who, text, rxPreviewHtml = '') {
+      const box = document.getElementById('waMessages');
+      const div = document.createElement('div');
+      div.className = 'wa-msg ' + who;
+      div.innerHTML = `${rxPreviewHtml}${escapeHtml(text)}<span class="wa-time">${fmtTime(state.clockMs)}</span>`;
+      box.appendChild(div);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function escapeHtml(s) {
+      return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function setExecStatus(status) {
+      const el = document.getElementById('execStatus');
+      el.className = 'status-pill ' + (status === 'idle' ? '' : status);
+      el.textContent = status;
+    }
+
+    function clearLog() {
+      document.getElementById('execLog').innerHTML = '';
+    }
+
+    function addLogStep(node, detail, tone = 'ok', ms = null) {
+      const log = document.getElementById('execLog');
+      const step = document.createElement('div');
+      step.className = 'log-step';
+      const timing = ms !== null ? `${ms}ms` : `${Math.floor(40 + Math.random() * 140)}ms`;
+      step.innerHTML = `
+        <span class="log-dot ${tone === 'ok' ? '' : tone}"></span>
+        <div>
+          <div class="log-node">${escapeHtml(node)}</div>
+          <div class="log-detail">${escapeHtml(detail)}</div>
+        </div>
+        <span class="log-ms">${timing}</span>`;
+      log.appendChild(step);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    // Arabic-Indic digits helper + fuzzy matching
+    function arabicToLatinDigits(str) {
+      return str.replace(/[٠-٩]/g, d => '0123456789'['٠١٢٣٤٥٦٧٨٩'.indexOf(d)]);
+    }
+
+    function levenshtein(a, b) {
+      const m = a.length, n = b.length;
+      const dp = Array.from({ length: m + 1 }, (_, i) => [i]);
+      for (let j = 0; j <= n; j++) dp[0][j] = j;
+      for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+          dp[i][j] = a[i - 1] === b[j - 1]
+            ? dp[i - 1][j - 1]
+            : 1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
+        }
+      }
+      return dp[m][n];
+    }
+
+    function parseMedicineRequest(rawText) {
+      const normalized = arabicToLatinDigits(rawText).toLowerCase().trim();
+      if (/^(hi|hello|hey|salam|السلام|ازيك|صباح|مساء)/.test(normalized) && normalized.length < 22) {
+        return { is_prescription: false, readable: true, medicines: [], other: 'greeting' };
+      }
+
+      // Extract quantity like "x2", "2 panadol", "عايز 2 بانادول"
+      let qty = 1;
+      const xMatch = normalized.match(/(?:x|\*|×)\s*(\d+)/);
+      const leadNum = normalized.match(/(?:^|\s)(\d{1,2})(?:\s+|$)/);
+      if (xMatch) qty = Math.max(1, parseInt(xMatch[1], 10));
+      else if (leadNum && Number(leadNum[1]) <= 20) qty = Math.max(1, parseInt(leadNum[1], 10));
+
+      const tokens = normalized.split(/[\s,،+]+/).filter(Boolean);
+      const found = [];
+
+      for (const item of state.catalog) {
+        const keys = [item.name.toLowerCase(), item.active_ingredient.toLowerCase(), ...(item.aliases || [])];
+        const direct = keys.some(k => normalized.includes(k));
+        const fuzzy = !direct && tokens.some(t => t.length >= 5 && keys.some(k => k.length >= 5 && levenshtein(t, k) <= 2));
+        if (direct || fuzzy) {
+          found.push({ item, qty, fuzzy });
+        }
+      }
+
+      return { is_prescription: false, readable: true, medicines: found, other: found.length ? '' : 'empty' };
+    }
+
+    async function handleCustomerMessage(text, isPhoto = false) {
+      const reqId = makeReqId();
+      if (isPhoto) {
+        appendWa('user', 'Prescription photo attached', '<div class="wa-rx-card">📄 Rx_Dr_Hassan.jpg<br>1) Augmentin 1g — x1<br>2) Concor 5mg — x1</div>');
+      } else {
+        appendWa('user', text);
+      }
+
+      clearLog();
+      setExecStatus('running');
+      addLogStep('WhatsApp Trigger', `Incoming ${isPhoto ? 'image' : 'text'} · ${reqId}`, 'info', 12);
+      await wait(160);
+      addLogStep('Normalize Message', `is_photo=${isPhoto} · sender=+201062016745`, 'ok', 18);
+      await wait(160);
+      addLogStep('Is Photo?', isPhoto ? 'true → Prescription image branch' : 'false → Text branch', 'ok', 9);
+      await wait(180);
+
+      let matches = [];
+      let other = '';
+      if (isPhoto) {
+        addLogStep('Get Photo URL', 'Meta Media API resolved lookaside.fbsbx.com URL', 'ok', 142);
+        await wait(170);
+        addLogStep('Download Photo', 'Downloaded 32.8 kB image/jpeg → binary.data', 'ok', 195);
+        await wait(170);
+        addLogStep('Prepare Prescription Read', 'Encoded base64 + multimodal JSON prompt', 'ok', 28);
+        await wait(240);
+        addLogStep('AI Read Request', 'Gemini 3.5 Flash Lite → 2 medicines extracted (is_prescription=true)', 'ok', 640);
+        matches = [
+          { item: state.catalog.find(c => c.sku === 'P004'), qty: 1, fuzzy: false },
+          { item: state.catalog.find(c => c.sku === 'P006'), qty: 1, fuzzy: false }
+        ];
+      } else {
+        addLogStep('Prepare Text Read', `Built JSON prompt for "${text}"`, 'ok', 15);
+        await wait(240);
+        const parsed = parseMedicineRequest(text);
+        matches = parsed.medicines;
+        other = parsed.other;
+        addLogStep('AI Read Request', `Gemini 3.5 Flash Lite → ${matches.length} item(s) parsed`, 'ok', 410);
+      }
+
+      await wait(170);
+      addLogStep('Read Catalog', `Loaded ${state.catalog.length} SKUs from Google Sheets`, 'ok', 110);
+      await wait(170);
+
+      if (matches.length === 0) {
+        addLogStep('Match Catalog', 'route = nothing_found', 'warn', 24);
+        await wait(140);
+        addLogStep('Route Request', '→ Nothing Found Reply', 'warn', 11);
+        await wait(140);
+        const reply = other === 'greeting'
+          ? 'Welcome to Dawaa Pharmacy! Please send the medicine name (e.g. Panadol 500 x2) or a clear photo of your prescription.'
+          : `Sorry, we could not find "${text}" in our pharmacy catalog. Please double-check the spelling or send a photo of the box/prescription.`;
+        addLogStep('Nothing Found Reply', 'Sent WhatsApp guidance reply', 'ok', 95);
+        appendWa('bot', reply);
+        setExecStatus('done');
+        return;
+      }
+
+      // Check rules
+      let needsPharmacist = isPhoto;
+      const expiresMs = state.clockMs + 2 * 60 * 60 * 1000;
+      const lines = matches.map(({ item, qty, fuzzy }) => {
+        const reasons = [];
+        if (isPhoto) reasons.push('Prescription photo');
+        if (item.controlled === 'yes') reasons.push('Controlled drug');
+        if (item.stock < qty) reasons.push(`Low stock (avail: ${item.stock})`);
+        if (fuzzy) reasons.push('Fuzzy typo match');
+        if (reasons.length > 0) needsPharmacist = true;
+        return {
+          res_id: reqId,
+          created_at: fmtTime(state.clockMs),
+          customer_name: 'Abdelrahman',
+          sku: item.sku,
+          name: item.name,
+          strength: item.strength,
+          qty,
+          total_egp: item.price_egp * qty,
+          status: needsPharmacist ? 'pending_pharmacist' : 'reserved',
+          expires_at_ms: expiresMs,
+          expires_at: fmtTime(expiresMs),
+          pharmacist: '',
+          note: reasons.length ? reasons.join('; ') : 'Auto-reserved'
+        };
+      });
+
+      const finalRoute = needsPharmacist ? 'needs_pharmacist' : 'auto_reserve';
+      lines.forEach(l => l.status = finalRoute === 'needs_pharmacist' ? 'pending_pharmacist' : 'reserved');
+
+      addLogStep('Match Catalog', `Matched ${lines.map(l => l.name).join(', ')} · route = ${finalRoute}`, finalRoute === 'auto_reserve' ? 'ok' : 'warn', 32);
+      await wait(160);
+      addLogStep('One Row per Medicine', `Expanded ${lines.length} reservation row(s)`, 'ok', 10);
+      await wait(150);
+
+      lines.forEach(l => state.reservations.unshift(l));
+      renderAllSheets();
+      addLogStep('Save Reservation Lines', `Appended ${lines.length} row(s) to Reservations`, 'ok', 135);
+      await wait(160);
+
+      if (finalRoute === 'auto_reserve') {
+        addLogStep('Auto or Pharmacist?', 'false → Auto-reserve OTC path', 'ok', 8);
+        await wait(140);
+        lines.forEach(l => {
+          const cat = state.catalog.find(c => c.sku === l.sku);
+          if (cat) cat.stock = Math.max(0, cat.stock - l.qty);
+        });
+        renderAllSheets();
+        addLogStep('Take Stock Now → Update Stock', 'Deducted reserved quantity in Catalog', 'ok', 120);
+        await wait(150);
+        const total = lines.reduce((s, l) => s + l.total_egp, 0);
+        const summary = lines.map(l => `${l.qty} × ${l.name} ${l.strength} = ${l.total_egp} EGP`).join('
+');
+        appendWa('bot', `✅ Reserved for 2 hours (${reqId}):
+${summary}
+Total: ${total} EGP. Pick up from the pharmacy. / محجوز لمدة ساعتين.`);
+        addLogStep('Confirm Reservation', 'Sent WhatsApp reservation confirmation', 'ok', 98);
+        setExecStatus('done');
+      } else {
+        addLogStep('Auto or Pharmacist?', 'true → Escalate to Telegram pharmacist', 'warn', 8);
+        await wait(150);
+        postTelegramApproval(reqId, lines, isPhoto);
+        addLogStep('Ask Pharmacist', `Posted ${reqId} to Telegram with Approve / Reject`, 'info', 110);
+        await wait(140);
+        appendWa('bot', `Hello Abdelrahman, we received your request (${reqId}). Our pharmacist is reviewing it now and will confirm shortly. / الصيدلي بيراجع طلبك حالاً.`);
+        addLogStep('Tell Customer: Pharmacist Checking', 'Sent WhatsApp review notice', 'ok', 88);
+        setExecStatus('waiting');
+      }
+    }
+
+    function postTelegramApproval(reqId, lines, isPhoto) {
+      const feed = document.getElementById('tgFeed');
+      const total = lines.reduce((s, l) => s + l.total_egp, 0);
+      const itemsText = lines.map((l, i) => {
+        const cat = state.catalog.find(c => c.sku === l.sku);
+        const avail = cat ? cat.stock : 0;
+        return `${i + 1}. ${l.name} (${l.strength}) x${l.qty} — Stock: ${avail} | ${l.note}`;
+      }).join('
+');
+
+      const card = document.createElement('div');
+      card.className = 'tg-card';
+      card.id = 'tg-' + reqId;
+      card.innerHTML = `
+        <div class="tg-sender">Dawaa Bot</div>🩺 <strong>New Pharmacy Request (${reqId})</strong>
+Customer: Abdelrahman (+201062016745)
+Type: ${isPhoto ? 'Prescription Photo' : 'Text Request'}
+
+${escapeHtml(itemsText)}
+
+Est. Total: ${total} EGP
+        <div class="tg-btns">
+          <button class="tg-btn approve" data-act="approved">✅ Approve</button>
+          <button class="tg-btn reject" data-act="rejected">❌ Reject</button>
+        </div>`;
+
+      card.querySelectorAll('.tg-btn').forEach(btn => {
+        btn.addEventListener('click', () => handlePharmacistDecision(reqId, btn.dataset.act, card));
+      });
+
+      feed.appendChild(card);
+      feed.scrollTop = feed.scrollHeight;
+    }
+
+    async function handlePharmacistDecision(reqId, action, cardEl) {
+      setExecStatus('running');
+      addLogStep('Telegram Trigger', `callback_query = ${action}:${reqId}`, 'info', 14);
+      await wait(140);
+      addLogStep('Parse Decision', `action=${action} · pharmacist=Dr. Ahmed`, 'ok', 12);
+      await wait(140);
+
+      const pending = state.reservations.filter(r => r.res_id === reqId && r.status === 'pending_pharmacist');
+      if (pending.length === 0) {
+        addLogStep('Decision OK?', 'false → Already processed', 'warn', 10);
+        setExecStatus('done');
+        return;
+      }
+
+      if (action === 'approved') {
+        for (const line of pending) {
+          const cat = state.catalog.find(c => c.sku === line.sku);
+          if (!cat || cat.stock < line.qty) {
+            addLogStep('Apply Decision', `Blocked: Insufficient stock for ${line.name} (avail: ${cat ? cat.stock : 0}). Restock in sheet below & retry!`, 'err', 22);
+            addLogStep('Decision OK?', 'false → Waiting for restock', 'err', 8);
+            setExecStatus('waiting');
+            return;
+          }
+        }
+      }
+
+      addLogStep('Apply Decision → Answer Pharmacist', `decision_ok=true · Updating ${pending.length} line(s)`, 'ok', 45);
+      await wait(150);
+
+      pending.forEach(line => {
+        line.status = action;
+        line.pharmacist = 'Dr. Ahmed';
+        line.note = `${action} at ${fmtTime(state.clockMs)}`;
+      });
+
+      if (action === 'approved') {
+        pending.forEach(line => {
+          const cat = state.catalog.find(c => c.sku === line.sku);
+          if (cat) cat.stock = Math.max(0, cat.stock - line.qty);
+        });
+        addLogStep('Update Lines → Take Stock (Approved)', 'Updated Reservations & deducted Catalog stock', 'ok', 130);
+        const total = pending.reduce((s, l) => s + l.total_egp, 0);
+        const list = pending.map(l => `• ${l.name} (${l.strength}) x${l.qty}`).join('
+');
+        appendWa('bot', `✅ Approved by pharmacist (${reqId})!
+Reserved for 2 hours:
+${list}
+Total: ${total} EGP.`);
+        addLogStep('Tell Customer: Approved', 'Sent WhatsApp approval confirmation', 'ok', 95);
+      } else {
+        addLogStep('Update Lines', 'Marked Reservations rows as rejected', 'warn', 110);
+        appendWa('bot', `Hello Abdelrahman, regarding ${reqId}: our pharmacist could not fulfill this request right now (out of stock or needs in-person consultation).`);
+        addLogStep('Tell Customer: Rejected', 'Sent WhatsApp rejection notice', 'ok', 90);
+      }
+
+      const btns = cardEl.querySelector('.tg-btns');
+      if (btns) btns.remove();
+      const stamp = document.createElement('div');
+      stamp.className = 'tg-stamp ' + (action === 'approved' ? 'ok' : 'no');
+      stamp.textContent = `${action === 'approved' ? '✅ APPROVED' : '❌ REJECTED'} by Dr. Ahmed at ${fmtTime(state.clockMs)}`;
+      cardEl.appendChild(stamp);
+      addLogStep('Mark Message Done', 'Stamped Telegram card', 'ok', 64);
+
+      renderAllSheets();
+      setExecStatus('done');
+    }
+
+    document.getElementById('waForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const inp = document.getElementById('waInput');
+      const val = inp.value.trim();
+      if (!val) return;
+      inp.value = '';
+      handleCustomerMessage(val, false);
+    });
+
+    document.getElementById('waPhotoBtn').addEventListener('click', () => handleCustomerMessage('', true));
+    document.getElementById('waPills').addEventListener('click', (e) => {
+      const btn = e.target.closest('.wa-pill');
+      if (!btn) return;
+      if (btn.dataset.rx) handleCustomerMessage('', true);
+      else handleCustomerMessage(btn.dataset.msg, false);
+    });
+    document.getElementById('resetDemoBtn').addEventListener('click', resetState);
+
+    /* =====================================================================
+       BACK OFFICE JOBS (CLOCK, SWEEP, REORDER, ERRORS)
+       ===================================================================== */
+    function renderClock() {
+      document.getElementById('demoClockDisplay').textContent = `Demo clock ${fmtTime(state.clockMs)}`;
+    }
+
+    document.getElementById('advanceClockBtn').addEventListener('click', () => {
+      state.clockMs += 60 * 60 * 1000;
+      renderClock();
+    });
+
+    document.getElementById('runSweepBtn').addEventListener('click', () => {
+      const expirable = new Set(['reserved', 'approved', 'pending_pharmacist']);
+      const expired = state.reservations.filter(r => expirable.has(r.status) && r.expires_at_ms <= state.clockMs);
+      const out = document.getElementById('sweepOutput');
+
+      if (expired.length === 0) {
+        out.textContent = `[${fmtTime(state.clockMs)}] Sweep ran: 0 expired reservations found.
+Tip: Reserve a medicine at Live counter, then click "Advance 1 hour" twice.`;
+        return;
+      }
+
+      const restocked = [];
+      expired.forEach(line => {
+        const hadStock = line.status === 'reserved' || line.status === 'approved';
+        line.status = 'expired';
+        line.note = `${line.note} | Expired at ${fmtTime(state.clockMs)}`;
+        if (hadStock) {
+          const cat = state.catalog.find(c => c.sku === line.sku);
+          if (cat) {
+            cat.stock += line.qty;
+            restocked.push(`${line.sku} (${line.name}) +${line.qty} → stock ${cat.stock}`);
+          }
+        }
+        appendWa('bot', `⏰ Your reservation (${line.res_id}) for ${line.name} x${line.qty} expired and stock has been released.`);
+      });
+
+      renderAllSheets();
+      out.textContent = `[${fmtTime(state.clockMs)}] Expired ${expired.length} line(s):
+` +
+        expired.map(l => `• ${l.res_id} · ${l.name} x${l.qty} → marked expired`).join('
+') +
+        (restocked.length ? `
+
+Stock returned to Catalog:
+${restocked.map(r => '↩ ' + r).join('
+')}` : '');
+    });
+
+    document.getElementById('runReorderBtn').addEventListener('click', () => {
+      const low = state.catalog
+        .filter(c => Number(c.stock) <= Number(c.reorder_level))
+        .sort((a, b) => a.stock - b.stock);
+      const out = document.getElementById('reorderOutput');
+
+      if (low.length === 0) {
+        out.textContent = `[${fmtTime(state.clockMs)}] All 10 SKUs are above their reorder_level. No reorder email sent.`;
+        return;
+      }
+
+      const lines = low.map((item, i) => {
+        const orderQty = Math.max(item.reorder_level * 2 - item.stock, item.reorder_level);
+        const tag = item.stock === 0 ? '🔴 OUT' : '🟠 LOW';
+        return `${i + 1}. ${tag} ${item.name} [${item.sku}] — Stock: ${item.stock} / Reorder: ${item.reorder_level} → Order ~${orderQty}`;
+      });
+
+      const report = `📦 Daily Reorder List (${low.length} items):
+${lines.join('
+')}
+
+✓ Posted to Telegram & emailed via Gmail.`;
+      out.textContent = report;
+
+      const feed = document.getElementById('tgFeed');
+      const card = document.createElement('div');
+      card.className = 'tg-card';
+      card.innerHTML = `<div class="tg-sender">Dawaa Bot · 22:00 Reorder</div>${escapeHtml(lines.join('
+'))}`;
+      feed.appendChild(card);
+    });
+
+    let selectedErrNode = 'Download Photo';
+    document.getElementById('errorPresets').addEventListener('click', (e) => {
+      const chip = e.target.closest('.preset-chip');
+      if (!chip) return;
+      document.querySelectorAll('.preset-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      selectedErrNode = chip.dataset.node;
+      document.getElementById('errorMsgInput').value = chip.dataset.msg;
+    });
+
+    document.getElementById('triggerErrorBtn').addEventListener('click', () => {
+      const msg = document.getElementById('errorMsgInput').value.trim() || 'Unknown workflow error';
+      const lower = msg.toLowerCase();
+      let category = 'runtime', severity = 'warning';
+      if (lower.includes('token') || lower.includes('401') || lower.includes('403') || lower.includes('forbidden')) {
+        category = 'auth'; severity = 'critical';
+      } else if (lower.includes('quota') || lower.includes('429') || lower.includes('high demand')) {
+        category = 'api_transient'; severity = 'warning';
+      } else if (lower.includes('timeout') || lower.includes('network')) {
+        category = 'network'; severity = 'critical';
+      } else if (lower.includes('sheet') || lower.includes('not found')) {
+        category = 'integration'; severity = 'critical';
+      }
+
+      const entry = {
+        timestamp: fmtTime(state.clockMs),
+        severity,
+        category,
+        workflow_name: 'Dawaa 1 - Requests & Reservations',
+        node_name: selectedErrNode,
+        error_message: msg
+      };
+      state.errors.unshift(entry);
+      state.sheetTab = 'errors';
+      renderAllSheets();
+
+      const badge = severity === 'critical' ? '🚨 CRITICAL' : '⚠️ WARNING';
+      document.getElementById('errorOutput').textContent =
+        `${badge} [${category}]
+Node: ${entry.node_name}
+Logged to Google Sheets → Error Log
+Sent Telegram alert` +
+        (severity === 'critical' ? '
+✓ Critical? = true → Sent Gmail escalation' : '
+• Critical? = false → Telegram only');
+
+      const feed = document.getElementById('tgFeed');
+      const card = document.createElement('div');
+      card.className = 'tg-card';
+      card.innerHTML = `<div class="tg-sender">Dawaa Error Handler</div>${badge} — ${escapeHtml(entry.node_name)}
+Category: ${category}
+${escapeHtml(msg)}`;
+      feed.appendChild(card);
+    });
+
+    /* =====================================================================
+       SHARED INTERACTIVE GOOGLE SHEET COMPONENT
+       ===================================================================== */
+    function renderAllSheets() {
+      document.querySelectorAll('[data-sheet-host]').forEach(host => renderSheetInto(host));
+    }
+
+    function renderSheetInto(host) {
+      const tab = state.sheetTab;
+      let tableHtml = '';
+
+      if (tab === 'catalog') {
+        tableHtml = `
+          <table>
+            <thead>
+              <tr>
+                <th>SKU</th><th>NAME</th><th>ACTIVE_INGREDIENT</th><th>STRENGTH</th><th>PRICE_EGP</th><th>STOCK</th><th>REORDER_LEVEL</th><th>CONTROLLED</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${state.catalog.map(c => {
+                const isLow = Number(c.stock) <= Number(c.reorder_level);
+                return `
+                  <tr>
+                    <td>${c.sku}</td>
+                    <td class="strong">${c.name}</td>
+                    <td>${c.active_ingredient}</td>
+                    <td>${c.strength}</td>
+                    <td>${c.price_egp}</td>
+                    <td><input class="stock-input ${isLow ? 'low' : ''}" type="number" min="0" value="${c.stock}" data-sku="${c.sku}" /></td>
+                    <td>${c.reorder_level}</td>
+                    <td>${c.controlled === 'yes' ? '<span class="badge pending_pharmacist">yes</span>' : 'no'}</td>
+                  </tr>`;
+              }).join('')}
+            </tbody>
+          </table>`;
+      } else if (tab === 'reservations') {
+        tableHtml = `
+          <table>
+            <thead>
+              <tr>
+                <th>RES_ID</th><th>CREATED</th><th>CUSTOMER</th><th>SKU</th><th>NAME</th><th>QTY</th><th>TOTAL_EGP</th><th>STATUS</th><th>EXPIRES</th><th>PHARMACIST</th><th>NOTE</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${state.reservations.length === 0
+                ? '<tr><td colspan="11" style="text-align:center; padding:24px; color:var(--text-muted);">No reservations yet — try sending "Panadol 500 x2" or "Xanax" at the Live counter.</td></tr>'
+                : state.reservations.map(r => `
+                  <tr>
+                    <td class="strong">${r.res_id}</td>
+                    <td>${r.created_at}</td>
+                    <td>${r.customer_name}</td>
+                    <td>${r.sku}</td>
+                    <td class="strong">${r.name}</td>
+                    <td>${r.qty}</td>
+                    <td>${r.total_egp}</td>
+                    <td><span class="badge ${r.status}">${r.status}</span></td>
+                    <td>${r.expires_at}</td>
+                    <td>${r.pharmacist || '—'}</td>
+                    <td>${escapeHtml(r.note)}</td>
+                  </tr>`).join('')}
+            </tbody>
+          </table>`;
+      } else {
+        tableHtml = `
+          <table>
+            <thead>
+              <tr>
+                <th>TIME</th><th>SEVERITY</th><th>CATEGORY</th><th>WORKFLOW</th><th>NODE</th><th>ERROR_MESSAGE</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${state.errors.length === 0
+                ? '<tr><td colspan="6" style="text-align:center; padding:24px; color:var(--text-muted);">No errors logged — trigger a simulated failure in Back office to see rows appear here.</td></tr>'
+                : state.errors.map(err => `
+                  <tr>
+                    <td>${err.timestamp}</td>
+                    <td><span class="badge ${err.severity}">${err.severity}</span></td>
+                    <td>${err.category}</td>
+                    <td>${err.workflow_name}</td>
+                    <td class="strong">${err.node_name}</td>
+                    <td>${escapeHtml(err.error_message)}</td>
+                  </tr>`).join('')}
+            </tbody>
+          </table>`;
+      }
+
+      host.innerHTML = `
+        <div class="sheet-bar">
+          <div class="sheet-title">
+            <span class="sheet-icon">⊞</span>
+            <span>Dawaa · Google Sheet</span>
+            <span class="sheet-hint">Edit any stock number to restock.</span>
+          </div>
+          <div class="sheet-tabs">
+            <button class="sheet-tab ${tab === 'catalog' ? 'active' : ''}" data-tab="catalog">Catalog</button>
+            <button class="sheet-tab ${tab === 'reservations' ? 'active' : ''}" data-tab="reservations">Reservations (${state.reservations.length})</button>
+            <button class="sheet-tab ${tab === 'errors' ? 'active' : ''}" data-tab="errors">Errors (${state.errors.length})</button>
+          </div>
+        </div>
+        <div class="table-wrap">${tableHtml}</div>`;
+
+      host.querySelectorAll('.sheet-tab').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.sheetTab = btn.dataset.tab;
+          renderAllSheets();
+        });
+      });
+
+      host.querySelectorAll('.stock-input').forEach(inp => {
+        inp.addEventListener('change', () => {
+          const item = state.catalog.find(c => c.sku === inp.dataset.sku);
+          if (item) {
+            item.stock = Math.max(0, parseInt(inp.value, 10) || 0);
+            renderAllSheets();
+          }
+        });
+      });
+    }
+
+    /* =====================================================================
+       INTERACTIVE N8N WORKFLOW GRAPH VIEWER
+       ===================================================================== */
+    let activeWfKey = 'wf1';
+    let wfZoom = 0.72;
+
+    function nodeStyleForType(type) {
+      const t = type.toLowerCase();
+      if (t.includes('whatsapp')) return { bg: 'rgba(34,197,94,0.18)', color: '#4ade80', label: 'WA' };
+      if (t.includes('telegram')) return { bg: 'rgba(56,189,248,0.18)', color: '#38bdf8', label: 'TG' };
+      if (t.includes('googlesheets')) return { bg: 'rgba(22,163,74,0.20)', color: '#34d399', label: 'GS' };
+      if (t.includes('gmail')) return { bg: 'rgba(248,113,113,0.18)', color: '#f87171', label: 'GM' };
+      if (t.includes('code')) return { bg: 'rgba(251,191,36,0.16)', color: '#fbbf24', label: '{}' };
+      if (t.includes('if') || t.includes('switch')) return { bg: 'rgba(167,139,250,0.18)', color: '#a78bfa', label: 'IF' };
+      if (t.includes('httprequest')) return { bg: 'rgba(96,165,250,0.18)', color: '#60a5fa', label: 'API' };
+      if (t.includes('schedule')) return { bg: 'rgba(45,212,191,0.18)', color: '#2dd4bf', label: '⏱' };
+      if (t.includes('error')) return { bg: 'rgba(248,113,113,0.20)', color: '#f87171', label: '!' };
+      return { bg: 'rgba(148,163,184,0.18)', color: '#cbd5e1', label: 'N' };
+    }
+
+    async function loadWorkflowData(key) {
+      const entry = EMBEDDED_WORKFLOWS[key];
+      try {
+        const res = await fetch(entry.file);
+        if (res.ok) {
+          const json = await res.json();
+          if (Array.isArray(json.nodes)) {
+            return {
+              name: json.name,
+              nodes: json.nodes.map(n => ({
+                name: n.name,
+                type: (n.type || '').replace('n8n-nodes-base.', ''),
+                position: n.position
+              })),
+              connections: json.connections || {}
+            };
+          }
+        }
+      } catch (_) {}
+      return entry.data;
+    }
+
+    async function renderWorkflowCanvas(key) {
+      activeWfKey = key;
+      const entry = EMBEDDED_WORKFLOWS[key];
+      const graph = await loadWorkflowData(key);
+
+      document.getElementById('wfTitle').textContent = entry.title;
+      document.getElementById('wfDownloadBtn').href = entry.file;
+      document.getElementById('wfChips').innerHTML =
+        `<span class="wf-chip">${graph.nodes.length} nodes</span>` +
+        entry.triggers.map(t => `<span class="wf-chip">${t}</span>`).join('');
+      document.getElementById('wfNodeDetail').innerHTML =
+        `<strong>Click any node on the canvas</strong>Inspect how each trigger, Gemini request, Google Sheets update, and Telegram approval step works in <em>${entry.title}</em>.`;
+
+      const stage = document.getElementById('wfStage');
+      const svg = document.getElementById('wfEdges');
+      stage.querySelectorAll('.wf-node').forEach(n => n.remove());
+      svg.innerHTML = '';
+
+      const xs = graph.nodes.map(n => n.position[0]);
+      const ys = graph.nodes.map(n => n.position[1]);
+      const minX = Math.min(...xs) - 60;
+      const minY = Math.min(...ys) - 60;
+      const maxX = Math.max(...xs) + 280;
+      const maxY = Math.max(...ys) + 180;
+      const width = maxX - minX;
+      const height = maxY - minY;
+
+      stage.style.width = width + 'px';
+      stage.style.height = height + 'px';
+      stage.style.transform = `scale(${wfZoom})`;
+      svg.setAttribute('width', width);
+      svg.setAttribute('height', height);
+      document.getElementById('zoomReset').textContent = Math.round(wfZoom * 100) + '%';
+
+      const posMap = {};
+      graph.nodes.forEach(n => {
+        const x = n.position[0] - minX;
+        const y = n.position[1] - minY;
+        posMap[n.name] = { x, y };
+        const st = nodeStyleForType(n.type);
+
+        const el = document.createElement('div');
+        el.className = 'wf-node';
+        el.style.left = x + 'px';
+        el.style.top = y + 'px';
+        el.innerHTML = `
+          <span class="wf-node-icon" style="background:${st.bg}; color:${st.color}">${st.label}</span>
+          <div style="min-width:0;">
+            <div class="wf-node-name">${escapeHtml(n.name)}</div>
+            <div class="wf-node-type">${escapeHtml(n.type)}</div>
+          </div>`;
+
+        el.addEventListener('click', () => {
+          stage.querySelectorAll('.wf-node').forEach(x => x.classList.remove('selected'));
+          el.classList.add('selected');
+          const desc = NODE_DOCS[n.name] || `Executes the "${n.name}" step (${n.type}) in this n8n pipeline.`;
+          document.getElementById('wfNodeDetail').innerHTML = `
+            <strong>${escapeHtml(n.name)}</strong>
+            <div style="font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--accent); margin-bottom:8px;">n8n-nodes-base.${escapeHtml(n.type)}</div>
+            ${escapeHtml(desc)}`;
+        });
+        stage.appendChild(el);
+      });
+
+      // Draw smooth Bezier edges
+      Object.entries(graph.connections || {}).forEach(([srcName, outMap]) => {
+        const from = posMap[srcName];
+        if (!from) return;
+        const branches = outMap.main || [];
+        branches.forEach((targets, branchIdx) => {
+          (targets || []).forEach(target => {
+            const to = posMap[target.node];
+            if (!to) return;
+            const x1 = from.x + 176;
+            const y1 = from.y + 26 + (branchIdx * 8 - (branches.length - 1) * 4);
+            const x2 = to.x;
+            const y2 = to.y + 26;
+            const dx = Math.max(50, Math.abs(x2 - x1) * 0.45);
+            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            path.setAttribute('d', `M ${x1} ${y1} C ${x1 + dx} ${y1}, ${x2 - dx} ${y2}, ${x2} ${y2}`);
+            path.setAttribute('fill', 'none');
+            path.setAttribute('stroke', branchIdx === 1 && srcName === 'AI Read Request' ? '#f87171' : 'rgba(159, 179, 168, 0.42)');
+            path.setAttribute('stroke-width', '2');
+            svg.appendChild(path);
+          });
+        });
+      });
+    }
+
+    document.getElementById('wfPills').addEventListener('click', (e) => {
+      const btn = e.target.closest('.wf-pill');
+      if (!btn) return;
+      document.querySelectorAll('.wf-pill').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      renderWorkflowCanvas(btn.dataset.wf);
+    });
+
+    document.getElementById('zoomIn').addEventListener('click', () => {
+      wfZoom = Math.min(1.25, +(wfZoom + 0.12).toFixed(2));
+      document.getElementById('wfStage').style.transform = `scale(${wfZoom})`;
+      document.getElementById('zoomReset').textContent = Math.round(wfZoom * 100) + '%';
+    });
+    document.getElementById('zoomOut').addEventListener('click', () => {
+      wfZoom = Math.max(0.38, +(wfZoom - 0.12).toFixed(2));
+      document.getElementById('wfStage').style.transform = `scale(${wfZoom})`;
+      document.getElementById('zoomReset').textContent = Math.round(wfZoom * 100) + '%';
+    });
+    document.getElementById('zoomReset').addEventListener('click', () => {
+      wfZoom = 0.72;
+      document.getElementById('wfStage').style.transform = `scale(${wfZoom})`;
+      document.getElementById('zoomReset').textContent = '72%';
+    });
+
+    // Drag-to-pan canvas
+    (function enableCanvasDrag() {
+      const shell = document.getElementById('wfCanvasShell');
+      let dragging = false, sx = 0, sy = 0, sl = 0, st = 0;
+      shell.addEventListener('mousedown', (e) => {
+        if (e.target.closest('.wf-node') || e.target.closest('.wf-zoom-controls')) return;
+        dragging = true;
+        sx = e.pageX; sy = e.pageY;
+        sl = shell.scrollLeft; st = shell.scrollTop;
+      });
+      window.addEventListener('mouseup', () => dragging = false);
+      shell.addEventListener('mousemove', (e) => {
+        if (!dragging) return;
+        e.preventDefault();
+        shell.scrollLeft = sl - (e.pageX - sx);
+        shell.scrollTop = st - (e.pageY - sy);
+      });
+    })();
+
+    // Boot
+    resetState();
+    syncRoute();
+  </script>
+</body>
+</html>

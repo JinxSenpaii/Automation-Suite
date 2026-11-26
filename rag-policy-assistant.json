@@ -1,0 +1,300 @@
+{
+  "name": "RAG",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "Hello! I am the HR assistant. Ask me about leave, remote work, expenses or working hours.\nمرحباً! اسألني عن السياسات مثل الإجازات والعمل عن بعد.",
+        "options": {
+          "allowedOrigins": "https://YOUR-USERNAME.github.io",
+          "subtitle": "Answers only from the company policies",
+          "title": "HR Policy Assistant",
+          "responseMode": "lastNode"
+        }
+      },
+      "id": "82cf6d10-1006-40aa-a946-e4782bd93a8f",
+      "name": "Employee Question",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -864,
+        -144
+      ],
+      "webhookId": "e3202659-4f9c-46a9-96ec-6ac7fb71d03e"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chatInput }}",
+        "options": {
+          "systemMessage": "You are the HR Policy Assistant for the company. You help employees understand company policies.\n\nRULES\n1. ALWAYS call the policy_search tool before answering any policy question. Search with the key terms of the question.\n2. Answer ONLY from the text the tool returns. Never use outside knowledge and never guess numbers, dates or entitlements.\n3. Every answer must end with the source on its own line, like: (Source: <policy document name>).\n4. If the tool returns nothing relevant, reply exactly: \"I could not find this in the company policies. Please contact HR directly.\" (in the user's language).\n5. Reply in the same language as the question (Arabic or English). Keep answers short, clear and friendly.\n6. Politely refuse requests that are not about company policies or HR."
+        }
+      },
+      "id": "d3b18529-73fb-4671-b01a-bd5dd9ee0821",
+      "name": "HR Assistant",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        -560,
+        -144
+      ]
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 6
+      },
+      "id": "c6f8a223-ce0d-4a26-900d-74f340fd3d2d",
+      "name": "Chat Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -480,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Searches the company HR policy documents (leave, remote work, expenses, working hours and more). Use it for every policy question.",
+        "memoryKey": {
+          "__rl": true,
+          "value": "hr_policies",
+          "mode": "list",
+          "cachedResultName": "hr_policies"
+        }
+      },
+      "id": "8db9c01e-06d0-4a0a-883a-0137cae23141",
+      "name": "Policy Search",
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreInMemory",
+      "typeVersion": 1.3,
+      "position": [
+        -304,
+        128
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "ba0ee6a6-7c06-47aa-9ebc-091cf78b46b3",
+      "name": "Gemini Embeddings (Search)",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -304,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "formTitle": "Upload Policy Documents (private)",
+        "formDescription": "Admin only. Adds a policy file to the assistant's knowledge base.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Policy file",
+              "fieldType": "file",
+              "acceptFileTypes": ".pdf,.docx,.txt",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "718643cf-9185-4589-a00f-634a89d56884",
+      "name": "Upload Policy Documents",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        -864,
+        560
+      ],
+      "webhookId": "26fe8a7c-e14b-4b53-8274-6111d9193747"
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "memoryKey": {
+          "__rl": true,
+          "value": "hr_policies",
+          "mode": "list",
+          "cachedResultName": "hr_policies"
+        }
+      },
+      "id": "63ddd5e4-3d59-4566-ad79-c5ed83f9dd7f",
+      "name": "Add to Knowledge Base",
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreInMemory",
+      "typeVersion": 1.3,
+      "position": [
+        -560,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "dataType": "binary",
+        "options": {
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "source",
+                "value": "={{ $binary.data.fileName }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "f23a3244-c66f-4ae2-88da-7a6b65b3c265",
+      "name": "Read Uploaded Policy",
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1,
+      "position": [
+        -448,
+        784
+      ]
+    },
+    {
+      "parameters": {
+        "chunkOverlap": 200,
+        "options": {}
+      },
+      "id": "21fee9ee-43dd-443c-ac9c-224714570f9e",
+      "name": "Split Into Chunks (Upload)",
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        -448,
+        960
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "2a20774f-6f6b-41bf-88ee-02afb0207749",
+      "name": "Gemini Embeddings (Upload)",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -688,
+        768
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -656,
+        128
+      ],
+      "id": "449142ae-6891-40a8-83d7-9782f8439478",
+      "name": "Google Gemini Chat Model"
+    }
+  ],
+  "connections": {
+    "Employee Question": {
+      "main": [
+        [
+          {
+            "node": "HR Assistant",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "HR Assistant",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Policy Search": {
+      "ai_tool": [
+        [
+          {
+            "node": "HR Assistant",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini Embeddings (Search)": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Policy Search",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload Policy Documents": {
+      "main": [
+        [
+          {
+            "node": "Add to Knowledge Base",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Uploaded Policy": {
+      "ai_document": [
+        [
+          {
+            "node": "Add to Knowledge Base",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Into Chunks (Upload)": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Read Uploaded Policy",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini Embeddings (Upload)": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Add to Knowledge Base",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "HR Assistant",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "nodeGroups": []
+}
